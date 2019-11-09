@@ -3,6 +3,7 @@ package com.e.osu_id_app
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.R.attr.data
+import android.content.Intent
 import androidx.core.app.NotificationCompat.getExtras
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
@@ -24,6 +25,7 @@ import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Environment
+import android.widget.Button
 import kotlinx.android.synthetic.main.activity_second.*
 
 private const val REQUEST_CODE_PERMISSIONS = 10
@@ -37,13 +39,24 @@ class Review : AppCompatActivity() {
 
         val barcode: String = intent.getStringExtra("student_barcode") as String
         val fileName: String = intent.getStringExtra("FileName") as String
+        val filePath: String = intent.getStringExtra("FilePath") as String
 
+        // View image
         val bmp =
-            BitmapFactory.decodeFile(fileName)
-
+            BitmapFactory.decodeFile(filePath)
         val rotatedBitmap = bmp.rotate(90)
-
         imageView.setImageBitmap(rotatedBitmap)
+
+        //Button
+        val mButton = findViewById<Button>(R.id.button2)
+
+        mButton.setOnClickListener {
+            val intent = Intent(this, barcode_scan::class.java)
+
+            intent.putExtra("FileName", fileName)
+
+            startActivity(intent)
+        }
 
         //println("The Barcode is $barcode and the Filename is $fileName")
 

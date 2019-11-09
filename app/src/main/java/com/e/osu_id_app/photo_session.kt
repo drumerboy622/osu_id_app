@@ -120,7 +120,8 @@ class photo_session : AppCompatActivity() {
                     override fun onImageSaved(file: File) {
                         val randomIntent = Intent(this@photo_session, Review::class.java)
 
-                        randomIntent.putExtra("FileName", file.absolutePath)
+                        randomIntent.putExtra("FileName", fileName)
+                        randomIntent.putExtra("FilePath", file.absolutePath)
                         randomIntent.putExtra("student_barcode", barcode)
 
                         val msg = "Photo capture succeeded: ${file.absolutePath}"
