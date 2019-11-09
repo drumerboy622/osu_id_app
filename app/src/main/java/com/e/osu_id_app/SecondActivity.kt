@@ -1,6 +1,6 @@
 package com.e.osu_id_app
 
-import androidx.appcompat.app.AlertDialog
+//import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 

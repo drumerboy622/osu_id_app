@@ -1,10 +1,8 @@
 package com.e.osu_id_app;
 
-import com.e.osu_id_app.SecondActivity;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -19,12 +17,16 @@ import java.util.concurrent.TimeUnit;
 import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
 
 
+
+
 public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
+
+
         BarcodeCapture barcodeCapture = (BarcodeCapture)getSupportFragmentManager().findFragmentById(R.id.barcode);
         barcodeCapture.setRetrieval(this);
     }
@@ -50,7 +52,13 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                         .setMessage(barcode.displayValue);
                 builder.show();
 
-                Intent intent = new Intent(barcode_scan.this, SecondActivity.class);
+
+                Bundle get_intent = getIntent().getExtras();
+                String file_name = get_intent.getString("FileName");
+
+                Intent intent = new Intent(barcode_scan.this, photo_session.class);
+                intent.putExtra("fileName", file_name);
+                intent.putExtra("student_barcode", barcode.displayValue);
                 startActivity(intent);
 
             }
