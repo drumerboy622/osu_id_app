@@ -11,4 +11,6 @@
     <string name="session_name_header">Session Name</string>
     <string name="date_header">Date Last Used</string>
     <string name="progress_header">Upload Progress</string>
+    <string name="file_name">morning</string>
+    <string name="studentid">StudentID</string>
 </resources>
