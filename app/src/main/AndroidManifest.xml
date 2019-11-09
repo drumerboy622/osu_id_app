@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.e.osu_id_app">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -11,8 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Review"></activity>
+        <activity android:name=".photo_session" />
         <activity android:name=".Camera" />
-        <activity android:name=".PhotoCenterActvitiy"></activity>
         <activity android:name=".SecondActivity" />
         <activity android:name=".barcode_scan" />
         <activity android:name=".MainActivity">
