@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
     }
 
@@ -36,12 +35,7 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("Enter Session Name")
 
         val input = EditText(this@MainActivity)
-        val lp = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
 
-        input.layoutParams = lp
         builder.setView(input)
 
 

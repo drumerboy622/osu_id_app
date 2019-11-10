@@ -65,7 +65,7 @@ class photo_session : AppCompatActivity() {
     private fun startCamera() {
 
         val barcode: String = intent.getStringExtra("student_barcode") as String
-        val fileName: String = intent.getStringExtra("fileName") as String
+        val fileName: String = intent.getStringExtra("FileName") as String
 
 
         // Create configuration object for the viewfinder use case
@@ -121,6 +121,7 @@ class photo_session : AppCompatActivity() {
                         val randomIntent = Intent(this@photo_session, Review::class.java)
 
                         randomIntent.putExtra("FileName", fileName)
+                        randomIntent.putExtra("FilePath", file.absolutePath)
                         randomIntent.putExtra("student_barcode", barcode)
 
                         val msg = "Photo capture succeeded: ${file.absolutePath}"
