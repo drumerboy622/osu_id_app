@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Environment
 import android.widget.Button
+import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_second.*
 
 private const val REQUEST_CODE_PERMISSIONS = 10
@@ -36,10 +37,14 @@ class Review : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
 
-
+        // Get Values from last activity
         val barcode: String = intent.getStringExtra("student_barcode") as String
         val fileName: String = intent.getStringExtra("FileName") as String
         val filePath: String = intent.getStringExtra("FilePath") as String
+
+        //Display Barcode
+        var textView = findViewById<TextView>(R.id.textView11)
+        textView.text = barcode
 
         // View image
         val bmp =

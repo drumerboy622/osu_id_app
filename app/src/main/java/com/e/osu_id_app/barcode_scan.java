@@ -6,6 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.SparseArray;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.samples.vision.barcodereader.BarcodeCapture;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
@@ -25,6 +31,30 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
+
+        // Home Button
+        ImageButton imageView = (ImageButton)findViewById(R.id.imageView4);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(barcode_scan.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Manual Scan Button
+        TextView textView = (TextView)findViewById(R.id.textView6);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(barcode_scan.this, manual_scan.class);
+                Bundle get_intent = getIntent().getExtras();
+                String file_name = get_intent.getString("FileName");
+                intent.putExtra("FileName", file_name);
+                startActivity(intent);
+            }
+        });
+
 
 
         BarcodeCapture barcodeCapture = (BarcodeCapture)getSupportFragmentManager().findFragmentById(R.id.barcode);
@@ -57,7 +87,7 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                 String file_name = get_intent.getString("FileName");
 
                 Intent intent = new Intent(barcode_scan.this, photo_session.class);
-                intent.putExtra("fileName", file_name);
+                intent.putExtra("FileName", file_name);
                 intent.putExtra("student_barcode", barcode.displayValue);
                 startActivity(intent);
 
@@ -74,5 +104,11 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
     public void onBitmapScanned(SparseArray<Barcode> sparseArray) {
 
     }
+
+
+
+
 }
+
+
 

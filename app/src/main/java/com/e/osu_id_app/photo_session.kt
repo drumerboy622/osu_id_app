@@ -65,7 +65,7 @@ class photo_session : AppCompatActivity() {
     private fun startCamera() {
 
         val barcode: String = intent.getStringExtra("student_barcode") as String
-        val fileName: String = intent.getStringExtra("fileName") as String
+        val fileName: String = intent.getStringExtra("FileName") as String
 
 
         // Create configuration object for the viewfinder use case
