@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_second.*
 import java.io.File
 import java.nio.ByteBuffer
 import java.util.concurrent.Executors
