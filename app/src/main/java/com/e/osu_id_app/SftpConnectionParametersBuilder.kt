@@ -1,4 +1,4 @@
-package com.osuidsftp
+package com.e.osu_id_app
 
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -25,11 +25,11 @@ class SftpConnectionParametersBuilder {
      */
     @Throws(IllegalArgumentException::class)
     fun create(): SftpConnectionParameters {
-        if (StringUtils.isEmpty(host)) {
-            throw IllegalArgumentException("host cannot be blank")
-        }
+        //if (StringUtils.isEmpty(host)) {
+        //    throw IllegalArgumentException("host cannot be blank")
+        //}
 
-        return SftpConnectionParameters(host!!, port, username, password)
+        return SftpConnectionParameters("54.208.173.146", 22, "defaultuser", "CWT34GGLKZJUFJE6CYF5P3IDXU".toByteArray())
     }
 
     /**

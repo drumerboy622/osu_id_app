@@ -1,4 +1,4 @@
-package com.osuidsftp
+package com.e.osu_id_app
 
 /**
  * Encapsulates a pair of file paths.

@@ -1,8 +1,8 @@
-package com.osuidsftp.task
+package com.e.osu_id_app.task
 
-import com.osuidsftp.FilePair
-import com.osuidsftp.KsftpLog
-import com.osuidsftp.SftpConnectionParameters
+import com.e.osu_id_app.FilePair
+import com.e.osu_id_app.KsftpLog
+import com.e.osu_id_app.SftpConnectionParameters
 import com.jcraft.jsch.SftpException
 import org.apache.commons.lang3.StringUtils
 

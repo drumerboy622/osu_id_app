@@ -1,4 +1,4 @@
-package com.osuidsftp
+package com.e.osu_id_app
 
 import org.apache.commons.lang3.StringUtils
 import org.apache.logging.log4j.Level

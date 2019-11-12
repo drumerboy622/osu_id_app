@@ -1,8 +1,8 @@
-package com.osuidsftp.task
+package com.e.osu_id_app.task
 
-import com.osuidsftp.FilePair
-import com.osuidsftp.KsftpLog
-import com.osuidsftp.SftpConnectionParameters
+import com.e.osu_id_app.FilePair
+import com.e.osu_id_app.KsftpLog
+import com.e.osu_id_app.SftpConnectionParameters
 import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.ChannelSftp
 import com.jcraft.jsch.JSch
@@ -66,17 +66,17 @@ internal abstract class BaseTask(val sftpConnectionParameters: SftpConnectionPar
                 session!!.setPassword(sftpConnectionParameters.password)
             }
 
-            KsftpLog.logDebug("Attempting to create SFTP session...")
+            System.out.println("Attempting to create SFTP session...")
             session!!.connect()
-            KsftpLog.logDebug("SFTP session established")
+            System.out.println("SFTP session established")
 
             // Open an SFTP connection
             sftpChannel = session!!.openChannel("sftp") as ChannelSftp
-            KsftpLog.logDebug("Attempting to create SFTP channel...")
+            System.out.println("Attempting to create SFTP channel...")
             sftpChannel!!.connect()
-            KsftpLog.logDebug("SFTP channel established")
+            System.out.println("SFTP channel established")
         } catch (e: Exception) {
-            KsftpLog.logError(e.message)
+            System.out.println(e.message)
             throw e
         }
     }

@@ -1,4 +1,4 @@
-package com.osuidsftp.exception
+package com.e.osu_id_app.exception
 
 /**
  * Thrown when a file upload times out.

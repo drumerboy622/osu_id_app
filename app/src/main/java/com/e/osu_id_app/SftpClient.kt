@@ -1,9 +1,9 @@
-package com.osuidsftp
-import com.osuidsftp.task.UploadTask
-import com.osuidsftp.task.FilesExistTask
-import com.osuidsftp.task.DeleteTask
+package com.e.osu_id_app
+import com.e.osu_id_app.task.UploadTask
+import com.e.osu_id_app.task.FilesExistTask
+import com.e.osu_id_app.task.DeleteTask
 
-import com.osuidsftp.exception.UploadTimeoutException
+import com.e.osu_id_app.exception.UploadTimeoutException
 import java.util.concurrent.*
 
 
@@ -14,7 +14,17 @@ class SftpClient(val sftpConnectionParameters: SftpConnectionParameters) {
 
     @Throws(UploadTimeoutException::class, InterruptedException::class)
     fun upload(localFilePath: String, remoteFilePath: String, timeoutInSeconds: Int): Boolean {
-        return uploadHelper(listOf(UploadTask(sftpConnectionParameters, listOf(FilePair(localFilePath, remoteFilePath)))), timeoutInSeconds)
+        var filePairs: MutableList<FilePair> = mutableListOf()
+        filePairs.add(FilePair(localFilePath, remoteFilePath))
+
+        val tasks = mutableListOf<UploadTask>()
+        filePairs.asSequence().batch(1).forEach { group ->
+            tasks.add(UploadTask(sftpConnectionParameters, group))
+        }
+
+        return uploadHelper(tasks, timeoutInSeconds)
+
+        //return uploadHelper(listOf(UploadTask(sftpConnectionParameters, filePairs)), timeoutInSeconds)
     }
 
     @Throws(UploadTimeoutException::class, InterruptedException::class)
@@ -76,7 +86,7 @@ class SftpClient(val sftpConnectionParameters: SftpConnectionParameters) {
             val timedOut = !threadPool.awaitTermination(adjustedTimeoutInSeconds.toLong(), TimeUnit.SECONDS)
             if (timedOut) {
                 val msg = "Upload of " + nbrFiles + " files timed out after " + adjustedTimeoutInSeconds + " seconds!"
-                KsftpLog.logError(msg)
+                System.out.println(msg)
                 throw UploadTimeoutException(msg)
             }
 
@@ -85,18 +95,18 @@ class SftpClient(val sftpConnectionParameters: SftpConnectionParameters) {
                 try {
                     if (!future.get()) success = false
                 } catch (e: InterruptedException) {
-                    KsftpLog.logError("Interrupted while getting task future!")
+                    System.out.println("Interrupted while getting task future!")
                     success = false
                 } catch (e: CancellationException) {
-                    KsftpLog.logError("Task future was canceled; likely because of a timeout")
+                    System.out.println("Task future was canceled; likely because of a timeout")
                     success = false
                 } catch (e: ExecutionException) {
-                    KsftpLog.logError("Execution exception while getting task future -> " + e)
+                    System.out.println("Execution exception while getting task future -> " + e)
                     success = false
                 }
             }
         } catch (e: InterruptedException) {
-            KsftpLog.logError("Interrupted while waiting for tasks to finish!")
+            System.out.println("Interrupted while waiting for tasks to finish!")
             throw e
         } finally {
             threadPool.shutdownNow()
