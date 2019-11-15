@@ -26,6 +26,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 import junit.framework.TestCase
+import kotlinx.android.synthetic.main.activity_photo_center_actvitiy.*
 import org.apache.commons.lang3.StringUtils
 import org.junit.Test
 import java.io.IOException
@@ -37,6 +38,8 @@ private const val REQUEST_CODE_PERMISSIONS = 10
 private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 
 class photo_session : AppCompatActivity() {
+
+    private var imageCapture: ImageCapture? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,133 +66,21 @@ class photo_session : AppCompatActivity() {
             updateTransform()
         }
 
-        // Create connection parameters
-        sftpClient = SftpClient.create(createConnectionParameters())
+        // Changes the flash mode when the button is clicked
+        fab_flash.setOnClickListener {
+            val flashMode = imageCapture?.flashMode
+            if(flashMode == FlashMode.ON) imageCapture?.flashMode = FlashMode.OFF
+            else imageCapture?.flashMode = FlashMode.ON
+        }
 
-        // Retrieve image directory location from local resources
-        //val testImagesSourceDirectory = getImagesDirectory("/testImages/")
-        //TestCase.assertTrue("Test images directory could not be found!", testImagesSourceDirectory.isDirectory)
 
-        // Check for files in image directory
-        //testFiles = testImagesSourceDirectory.listFiles()
-        //TestCase.assertTrue("No test image files were found!", testFiles != null && testFiles!!.size > 0)
-        //KsftpLog.logDebug("Found " + testFiles!!.size + " test image files")
     }
+
 
     private val executor = Executors.newSingleThreadExecutor()
     private lateinit var viewFinder: TextureView
 
-    // These environment variables must be defined on your machine
-    private val ENVIRONMENT_VARIABLE_HOST = "KSFTP_HOST"
-    private val ENVIRONMENT_VARIABLE_PORT = "KSFTP_PORT"
-    private val ENVIRONMENT_VARIABLE_USERNAME = "KSFTP_USERNAME"
-    private val ENVIRONMENT_VARIABLE_PASSWORD = "KSFTP_PASSWORD"
 
-    // Remote directory for upload - a folder at the user's root level on SFTP server
-    // Directory will be created if it does not exist
-    private val remoteDirectoryForUploads = "Folder1new/"
-
-    private var testFiles: Array<File>? = null
-    private var sftpClient: SftpClient? = null
-
-
-    /**
-     * Gets a file from the test resources package, or throws an exception if the test file doesn't exist.
-     * @param relativeFilePath the file path, relative to "src/test/resources"
-     */
-    @Throws(Exception::class)
-    private fun getImagesDirectory(relativeFilePath: String): File {
-        var theRelativeFilePath = relativeFilePath
-        val url = photo_session::class.java.getResource(theRelativeFilePath)
-
-        val testFile = File(url!!.file)
-        TestCase.assertTrue("No test file exists for relative path '$theRelativeFilePath'", testFile.exists())
-        return testFile
-    }
-
-    /**
-     * Ensures that a directory exists for the specified path, and returns the [File],
-     * or `null` if it could not be created.
-
-     * @param directoryPath the directory path to ensure
-     */
-    @Throws(IOException::class)
-    private fun ensureDirectory(directoryPath: String): File {
-        val errorMessage = "Could not create directory for path '$directoryPath'"
-        if (StringUtils.isEmpty(directoryPath)) {
-            throw IOException(errorMessage)
-        }
-
-        val directory = File(directoryPath)
-        if (directory.exists()) {
-            if (!directory.isDirectory) {
-                throw IOException("File '$directory' exists and is not a directory. Unable to create directory.")
-            }
-        } else {
-            if (!directory.mkdirs()) {
-                // Double-check that some other thread or process hasn't made
-                // the directory in the background
-                if (!directory.isDirectory) {
-                    throw IOException("Unable to create directory '$directory'")
-                }
-            }
-        }
-
-        if (!directory.isDirectory) {
-            throw IOException(errorMessage)
-        }
-        return directory
-    }
-
-    /**
-     * Creates new connection parameters.
-     */
-    private fun createConnectionParameters(): SftpConnectionParameters {
-        return SftpConnectionParametersBuilder.newInstance().createConnectionParameters()
-            .withHostFromEnvironmentVariable(ENVIRONMENT_VARIABLE_HOST)
-            .withPortFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PORT)
-            .withUsernameFromEnvironmentVariable(ENVIRONMENT_VARIABLE_USERNAME)
-            .withPasswordFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PASSWORD)
-            .create()
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun testAllSftpOperations() {
-        executeBatchUpload()
-    }
-
-    @Throws(Exception::class)
-    private fun executeBatchUpload() {
-
-        val remoteFilePaths = ArrayList<String>()
-        val filePairs = ArrayList<FilePair>()
-        for (testFile in testFiles!!) {
-            val remoteFilePath = remoteDirectoryForUploads + File.separator + testFile.name
-            filePairs.add(FilePair(testFile.path, remoteFilePath))
-            remoteFilePaths.add(remoteFilePath)
-        }
-
-        TestCase.assertTrue("Files were not uploaded!", sftpClient!!.upload(filePairs, 120*testFiles!!.size))
-        TestCase.assertTrue("Files don't exist on server!", sftpClient!!.checkFiles(remoteFilePaths))
-    }
-
-    /*
-    @Test
-    @Throws(Exception::class)
-    fun testBatchUploadTimeout() {
-        val remoteFilePaths = ArrayList<String>()
-        val filePairs = ArrayList<FilePair>()
-        for (testFile in testFiles!!) {
-            val remoteFilePath = remoteDirectoryForUploads + File.separator + testFile.name
-            filePairs.add(FilePair(testFile.path, remoteFilePath))
-            remoteFilePaths.add(remoteFilePath)
-        }
-
-        assertFailsWith(UploadTimeoutException::class, "Batch upload timed out with an unexpected exception") {
-            client!!.upload(filePairs, 2, 5)
-        }
-    }*/
 
     private fun startCamera() {
 
@@ -199,8 +90,9 @@ class photo_session : AppCompatActivity() {
 
         // Create configuration object for the viewfinder use case
         val previewConfig = PreviewConfig.Builder().apply {
-            setTargetResolution(Size(300, 400))
+            setTargetResolution(Size(600, 600))
         }.build()
+
 
 
         // Build the viewfinder use case
@@ -224,15 +116,16 @@ class photo_session : AppCompatActivity() {
                 // select a capture mode which will infer the appropriate
                 // resolution based on aspect ration and requested mode
                 setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY)
+                setFlashMode(FlashMode.ON)
             }.build()
 
         // Build the image capture use case and attach button click listener
-        val imageCapture = ImageCapture(imageCaptureConfig)
+        imageCapture = ImageCapture(imageCaptureConfig)
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
 
             val file = File(externalMediaDirs.first(), fileName + "/" + barcode + ".jpg")
 
-            imageCapture.takePicture(file, executor,
+            imageCapture!!.takePicture(file, executor,
                 object : ImageCapture.OnImageSavedListener {
                     override fun onError(
                         imageCaptureError: ImageCapture.ImageCaptureError,
@@ -252,15 +145,6 @@ class photo_session : AppCompatActivity() {
                         randomIntent.putExtra("FileName", fileName)
                         randomIntent.putExtra("FilePath", file.absolutePath)
                         randomIntent.putExtra("student_barcode", barcode)
-
-                        val msg = "Photo capture succeeded: ${file.absolutePath}"
-                        Log.d("CameraXApp", msg)
-                        viewFinder.post {
-                            makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                        }
-
-                        // Upload to SFTP
-                        sftpClient!!.upload(file.absolutePath, remoteDirectoryForUploads, 300);
 
                         startActivity(randomIntent)
                     }

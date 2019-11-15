@@ -9,11 +9,18 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.os.Build
+import android.view.TextureView
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import junit.framework.TestCase
+import org.apache.commons.lang3.StringUtils
+import org.junit.Test
+import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.ArrayList
+import java.util.concurrent.Executors
 
 
 class Review : AppCompatActivity() {
@@ -27,6 +34,9 @@ class Review : AppCompatActivity() {
         val barcode: String = intent.getStringExtra("student_barcode") as String
         val fileName: String = intent.getStringExtra("FileName") as String
         val filePath: String = intent.getStringExtra("FilePath") as String
+
+
+
 
         // Get Date file last updated
         val file = File(filePath)
@@ -42,6 +52,8 @@ class Review : AppCompatActivity() {
         var textView2 = findViewById<TextView>(R.id.textView12)
         textView2.text = fileName
 
+        var a: A=A(file)
+
 
         // View image
         val bmp =
@@ -55,6 +67,9 @@ class Review : AppCompatActivity() {
 
         kButton.setOnClickListener {
             val intent = Intent(this, barcode_scan::class.java)
+            // Create connection parameters
+
+            a.start()
 
             intent.putExtra("FileName", fileName)
 
@@ -191,3 +206,115 @@ fun Bitmap.rotate(degree:Int):Bitmap{
         true
     )
 }
+
+//threading upload to background
+class A(val file: File) : Thread()
+{
+    override fun run() {
+        // Upload file
+        sftpClient = SftpClient.create(createConnectionParameters())
+
+        // Upload to SFTP
+        sftpClient!!.upload(file.absolutePath, remoteDirectoryForUploads, 300);
+
+
+    }
+
+    // These environment variables must be defined on your machine
+    private val ENVIRONMENT_VARIABLE_HOST = "KSFTP_HOST"
+    private val ENVIRONMENT_VARIABLE_PORT = "KSFTP_PORT"
+    private val ENVIRONMENT_VARIABLE_USERNAME = "KSFTP_USERNAME"
+    private val ENVIRONMENT_VARIABLE_PASSWORD = "KSFTP_PASSWORD"
+
+    // Remote directory for upload - a folder at the user's root level on SFTP server
+// Directory will be created if it does not exist
+    private val remoteDirectoryForUploads = "Folder1new/"
+
+    private var testFiles: Array<File>? = null
+    private var sftpClient: SftpClient? = null
+
+
+    /**
+     * Gets a file from the test resources package, or throws an exception if the test file doesn't exist.
+     * @param relativeFilePath the file path, relative to "src/test/resources"
+     */
+    @Throws(Exception::class)
+    private fun getImagesDirectory(relativeFilePath: String): File {
+        var theRelativeFilePath = relativeFilePath
+        val url = photo_session::class.java.getResource(theRelativeFilePath)
+
+        val testFile = File(url!!.file)
+        TestCase.assertTrue("No test file exists for relative path '$theRelativeFilePath'", testFile.exists())
+        return testFile
+    }
+
+    /**
+     * Ensures that a directory exists for the specified path, and returns the [File],
+     * or `null` if it could not be created.
+
+     * @param directoryPath the directory path to ensure
+     */
+    @Throws(IOException::class)
+    private fun ensureDirectory(directoryPath: String): File {
+        val errorMessage = "Could not create directory for path '$directoryPath'"
+        if (StringUtils.isEmpty(directoryPath)) {
+            throw IOException(errorMessage)
+        }
+
+        val directory = File(directoryPath)
+        if (directory.exists()) {
+            if (!directory.isDirectory) {
+                throw IOException("File '$directory' exists and is not a directory. Unable to create directory.")
+            }
+        } else {
+            if (!directory.mkdirs()) {
+                // Double-check that some other thread or process hasn't made
+                // the directory in the background
+                if (!directory.isDirectory) {
+                    throw IOException("Unable to create directory '$directory'")
+                }
+            }
+        }
+
+        if (!directory.isDirectory) {
+            throw IOException(errorMessage)
+        }
+        return directory
+    }
+
+    /**
+     * Creates new connection parameters.
+     */
+    private fun createConnectionParameters(): SftpConnectionParameters {
+        return SftpConnectionParametersBuilder.newInstance().createConnectionParameters()
+            .withHostFromEnvironmentVariable(ENVIRONMENT_VARIABLE_HOST)
+            .withPortFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PORT)
+            .withUsernameFromEnvironmentVariable(ENVIRONMENT_VARIABLE_USERNAME)
+            .withPasswordFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PASSWORD)
+            .create()
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun testAllSftpOperations() {
+        executeBatchUpload()
+    }
+
+    @Throws(Exception::class)
+    private fun executeBatchUpload() {
+
+        val remoteFilePaths = ArrayList<String>()
+        val filePairs = ArrayList<FilePair>()
+        for (testFile in testFiles!!) {
+            val remoteFilePath = remoteDirectoryForUploads + File.separator + testFile.name
+            filePairs.add(FilePair(testFile.path, remoteFilePath))
+            remoteFilePaths.add(remoteFilePath)
+        }
+
+        TestCase.assertTrue("Files were not uploaded!", sftpClient!!.upload(filePairs, 120*testFiles!!.size))
+        TestCase.assertTrue("Files don't exist on server!", sftpClient!!.checkFiles(remoteFilePaths))
+    }
+}
+
+
+

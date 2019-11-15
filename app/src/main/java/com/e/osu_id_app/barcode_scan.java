@@ -71,11 +71,12 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                /*
                 AlertDialog.Builder builder = new AlertDialog.Builder(barcode_scan.this)
                         .setTitle("Code Retrieved")
                         .setMessage(barcode.displayValue);
                 builder.show();
-
+                */
 
                 Bundle get_intent = getIntent().getExtras();
                 String file_name = get_intent.getString("FileName");

@@ -14,7 +14,7 @@
     <string name="file_name">morning</string>
     <string name="studentid">StudentID</string>
     <string name="enter_manually_button">Enter Manually</string>
-    <string name="get_barcode_header">Get Barcode</string>
+    <string name="get_barcode_header">Read Barcode</string>
     <string name="go_back">Go Back</string>
     <string name="scan_button">Scan</string>
 </resources>
