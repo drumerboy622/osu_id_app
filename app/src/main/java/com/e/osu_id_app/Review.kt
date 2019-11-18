@@ -74,6 +74,7 @@ class Review : AppCompatActivity() {
             }
 
             intent.putExtra("FileName", fileName)
+            intent.putExtra("Path", path)
 
             startActivity(intent)
         }
