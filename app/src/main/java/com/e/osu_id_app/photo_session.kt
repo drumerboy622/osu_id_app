@@ -86,7 +86,7 @@ class photo_session : AppCompatActivity() {
 
         val barcode: String = intent.getStringExtra("student_barcode") as String
         val fileName: String = intent.getStringExtra("FileName") as String
-
+        val path: String = intent.getStringExtra("Path") as String
 
         // Create configuration object for the viewfinder use case
         val previewConfig = PreviewConfig.Builder().apply {
@@ -123,7 +123,7 @@ class photo_session : AppCompatActivity() {
         imageCapture = ImageCapture(imageCaptureConfig)
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
 
-            val file = File(externalMediaDirs.first(), fileName + "/" + barcode + ".jpg")
+            val file = File(externalMediaDirs.first(), path + "/" + fileName + "/" + barcode + ".jpg")
 
             imageCapture!!.takePicture(file, executor,
                 object : ImageCapture.OnImageSavedListener {
@@ -145,6 +145,7 @@ class photo_session : AppCompatActivity() {
                         randomIntent.putExtra("FileName", fileName)
                         randomIntent.putExtra("FilePath", file.absolutePath)
                         randomIntent.putExtra("student_barcode", barcode)
+                        randomIntent.putExtra("Path", path)
 
                         startActivity(randomIntent)
                     }

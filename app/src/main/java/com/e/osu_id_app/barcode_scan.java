@@ -44,7 +44,9 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                 Intent intent = new Intent(barcode_scan.this, manual_scan.class);
                 Bundle get_intent = getIntent().getExtras();
                 String file_name = get_intent.getString("FileName");
+                String path = get_intent.getString("Path");
                 intent.putExtra("FileName", file_name);
+                intent.putExtra("Path", path);
                 startActivity(intent);
             }
         });
@@ -80,9 +82,11 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
 
                 Bundle get_intent = getIntent().getExtras();
                 String file_name = get_intent.getString("FileName");
+                String path = get_intent.getString("Path");
 
                 Intent intent = new Intent(barcode_scan.this, photo_session.class);
                 intent.putExtra("FileName", file_name);
+                intent.putExtra("Path", path);
                 intent.putExtra("student_barcode", barcode.displayValue);
                 startActivity(intent);
 

@@ -21,7 +21,9 @@ class manual_scan : AppCompatActivity() {
     fun backScan (view: View) {
         val randomIntent = Intent(this@manual_scan, barcode_scan::class.java)
         val fileName: String = intent.getStringExtra("FileName") as String
+        val path: String = intent.getStringExtra("Path") as String
         randomIntent.putExtra("FileName", fileName)
+        randomIntent.putExtra("Path", path)
         startActivity(randomIntent)
     }
 
@@ -29,9 +31,10 @@ class manual_scan : AppCompatActivity() {
         val randomIntent = Intent(this@manual_scan, photo_session::class.java)
         val input = findViewById<EditText>(R.id.editText5)
         val barcode = input.getText().toString()
-
+        val path: String = intent.getStringExtra("Path") as String
         val fileName: String = intent.getStringExtra("FileName") as String
         randomIntent.putExtra("student_barcode", barcode)
+        randomIntent.putExtra("Path", path)
         randomIntent.putExtra("FileName", fileName)
         startActivity(randomIntent)
     }

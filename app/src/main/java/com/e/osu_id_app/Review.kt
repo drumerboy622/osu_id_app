@@ -34,7 +34,7 @@ class Review : AppCompatActivity() {
         val barcode: String = intent.getStringExtra("student_barcode") as String
         val fileName: String = intent.getStringExtra("FileName") as String
         val filePath: String = intent.getStringExtra("FilePath") as String
-
+        val path: String = intent.getStringExtra("Path") as String
 
 
 
@@ -69,7 +69,9 @@ class Review : AppCompatActivity() {
             val intent = Intent(this, barcode_scan::class.java)
             // Create connection parameters
 
-            a.start()
+            if(path == "sent") {
+                a.start()
+            }
 
             intent.putExtra("FileName", fileName)
 
@@ -90,6 +92,7 @@ class Review : AppCompatActivity() {
                 val intent = Intent(this, photo_session::class.java)
                 intent.putExtra("student_barcode", barcode)
                 intent.putExtra("FileName", fileName)
+                intent.putExtra("Path", path)
                 startActivity(intent)
             }}
             // Display a neutral button on alert dialog
@@ -121,6 +124,7 @@ class Review : AppCompatActivity() {
                 file.delete()
 
                 intent.putExtra("FileName", fileName)
+                intent.putExtra("Path", path)
                 startActivity(intent)
             }}
 
@@ -139,32 +143,9 @@ class Review : AppCompatActivity() {
         fun editSession(view: View) {
 
             //val randomIntent = Intent(this@MainActivity, barcode_scan::class.java)
-
             val builder = AlertDialog.Builder(this@Review)
 
             builder.setTitle("Change Session - COMING SOON")
-
-
-            /*
-            val input = EditText(this@MainActivity)
-
-            builder.setView(input)
-
-
-
-            builder.setPositiveButton("Start new Session"){dialog, which -> run {
-
-                var input1 = input.getText().toString()
-
-                //Create Folder
-                var filename = File(externalMediaDirs.first(), input1)
-                filename?.mkdirs()
-
-                randomIntent.putExtra("FileName", input1)
-                startActivity(randomIntent)
-            }
-            }
-             */
 
             // Display a neutral button on alert dialog
             builder.setNeutralButton("Cancel"){_,_ -> }
