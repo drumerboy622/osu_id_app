@@ -7,14 +7,31 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import android.widget.EditText
+import androidx.recyclerview.widget.LinearLayoutManager
 import java.io.File
+import androidx.recyclerview.widget.RecyclerView
 
 
 class MainActivity : AppCompatActivity() {
 
+    internal var mRecyclerView: RecyclerView
+    internal var myAdapter: PhotoPreviewAdapter
+
+    private val myList: ArrayList<PhotoPreviewModel>
+        get() {
+
+            val models = ArrayList()
+            val m = PhotoPreviewModel()
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mRecyclerView = findViewById(R.id.recyclerView)
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        myAdapter = PhotoPreviewAdapter(this, getMyList)
     }
 
     fun startSession (view: View) {
@@ -41,10 +58,10 @@ class MainActivity : AppCompatActivity() {
 
             randomIntent.putExtra("FileName", input1)
             startActivity(randomIntent)
-            }
+        }
         }
 
-    // Display a neutral button on alert dialog
+        // Display a neutral button on alert dialog
         builder.setNeutralButton("Cancel"){_,_ -> }
 
         // Finally, make the alert dialog using builder
