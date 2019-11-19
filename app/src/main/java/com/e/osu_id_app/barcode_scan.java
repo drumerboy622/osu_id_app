@@ -5,6 +5,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Parcelable;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageButton;
@@ -12,12 +14,20 @@ import android.widget.TextView;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeCapture;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
 import com.google.android.gms.vision.barcode.Barcode;
+
+import org.apache.logging.log4j.core.util.IOUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.EventListener;
 import java.util.List;
+import java.util.stream.Stream;
 
 import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
-
-
-
 
 public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
 
@@ -68,32 +78,68 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
     }
 
     @Override
-    public void onRetrieved(final Barcode barcode){
+    public void onRetrieved(final Barcode barcode) {
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                /*
-                AlertDialog.Builder builder = new AlertDialog.Builder(barcode_scan.this)
-                        .setTitle("Code Retrieved")
-                        .setMessage(barcode.displayValue);
-                builder.show();
-                */
 
                 Bundle get_intent = getIntent().getExtras();
                 String file_name = get_intent.getString("FileName");
                 String path = get_intent.getString("Path");
+                boolean exists = true;
 
-                Intent intent = new Intent(barcode_scan.this, photo_session.class);
-                intent.putExtra("FileName", file_name);
-                intent.putExtra("Path", path);
-                intent.putExtra("student_barcode", barcode.displayValue);
-                startActivity(intent);
+                try {
+                    File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/Android/media/com.osu_id_app");
+                    Path filePath = Paths.get(dir.getAbsolutePath());
+                    System.out.println(filePath);
+                    System.out.println(barcode.displayValue);
 
+                    Stream<Path> stream = Files.find(filePath, 1000,
+                            (pathA, basicFileAttributes) -> {
+                                File file = pathA.toFile();
+                                return !file.isDirectory() &&
+                                        file.getName().contains(barcode.displayValue + ".jpg");
+                            });
+
+                    filePath = stream.findFirst().orElse(null);
+
+                    try {
+                        System.out.println(filePath.toString());
+                        exists = filePath.toString().isEmpty();
+                        System.out.println(!exists);
+                    } catch (Exception e) {
+                        System.out.println("No File matches");
+                    }
+                        if (!exists) {
+                            //Get the file_name
+                            String reversed = new StringBuilder(filePath.toString()).reverse().toString();
+                            int start = reversed.indexOf('/');
+                            int end = reversed.indexOf('/', reversed.indexOf('/') + 1);
+                            String shortened = reversed.substring(start + 1, end);
+                            String unreversed = new StringBuilder(shortened).reverse().toString();
+
+                            //Send Intent to Review activity
+                            Intent intent = new Intent(barcode_scan.this, Review.class);
+                            intent.putExtra("FileName", unreversed);
+                            intent.putExtra("Path", path);
+                            intent.putExtra("student_barcode", barcode.displayValue);
+                            intent.putExtra("FilePath", filePath.toString());
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(barcode_scan.this, photo_session.class);
+                            intent.putExtra("FileName", file_name);
+                            intent.putExtra("Path", path);
+                            intent.putExtra("student_barcode", barcode.displayValue);
+                            startActivity(intent);
+                        }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
-
     @Override
     public void onRetrievedMultiple(Barcode closetToClick, List<BarcodeGraphic> barcode) {
 

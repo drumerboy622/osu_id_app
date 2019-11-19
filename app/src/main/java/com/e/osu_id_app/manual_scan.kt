@@ -28,6 +28,7 @@ class manual_scan : AppCompatActivity() {
     }
 
     fun enterBarcode (view: View) {
+
         val randomIntent = Intent(this@manual_scan, photo_session::class.java)
         val input = findViewById<EditText>(R.id.editText5)
         val barcode = input.getText().toString()

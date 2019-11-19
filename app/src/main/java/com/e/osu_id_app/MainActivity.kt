@@ -34,8 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         builder.setView(mDialogView)
 
-        builder.setMessage("Live Uploading capabilities COMING SOON")
-
         builder.setPositiveButton("Start new Session"){dialog, which -> run {
 
             var input1 = mDialogView.editText.text.toString()

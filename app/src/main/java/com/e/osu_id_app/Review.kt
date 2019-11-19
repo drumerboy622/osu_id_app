@@ -36,7 +36,7 @@ class Review : AppCompatActivity() {
         val filePath: String = intent.getStringExtra("FilePath") as String
         val path: String = intent.getStringExtra("Path") as String
 
-
+        println(filePath)
 
         // Get Date file last updated
         val file = File(filePath)
