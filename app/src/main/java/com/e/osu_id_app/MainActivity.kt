@@ -10,28 +10,22 @@ import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import java.io.File
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    internal var mRecyclerView: RecyclerView
-    internal var myAdapter: PhotoPreviewAdapter
-
-    private val myList: ArrayList<PhotoPreviewModel>
-        get() {
-
-            val models = ArrayList()
-            val m = PhotoPreviewModel()
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mRecyclerView = findViewById(R.id.recyclerView)
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        recyclerView.layoutManager = layoutManager
 
-        myAdapter = PhotoPreviewAdapter(this, getMyList)
+        val adapter = SessionCardAdapter(this, Supplier.sessions)
+        recyclerView.adapter = adapter
     }
 
     fun startSession (view: View) {
