@@ -27,6 +27,7 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
         fun setData(sessionCard: SessionCard?, pos: Int) {
             itemView.SessionTitle.text = sessionCard!!.title
             itemView.Session_Date.text = sessionCard!!.dateStr
+            itemView.Session_Number_Uploaded.text = sessionCard!!.progressStr
         }
 
     }

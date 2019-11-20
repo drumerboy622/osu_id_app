@@ -30,20 +30,53 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
 
         val savedSessions = ArrayList<SessionCard>()
-        val sdf = SimpleDateFormat("MM/dd/yyyy 'at' HH:mm:ss z")
+        val sdf = SimpleDateFormat("MM/dd/yy 'at' HH:mm z")
+
+        var filesTotalCnt = 0
+        var filesUploadedCnt = 0
 
         // using extension function walk
         File("/storage/emulated/0/Android/media/com.osu_id_app/").walk().forEach {
+
             //Create a Path object
             val path = Paths.get(it.absolutePath)
 
             if(Files.isDirectory(path) && it.name != "com.osu_id_app"){
-                savedSessions.add(SessionCard(it.name, sdf.format(it.lastModified()), "Upload Complete") )
+
+                filesTotalCnt = 0
+                filesUploadedCnt = 0
+
+                // Get files from sub directories
+                File(it.absolutePath).walk().forEach {
+                    if(it.isFile) {
+                        filesTotalCnt++
+                    }
+                }
+
+                savedSessions.add(SessionCard(it.name, sdf.format(it.lastModified()), filesTotalCnt.toString() + " Files") )
+
+
             }
+
+
         }
 
         var adapter = SessionCardAdapter(this, savedSessions)
         recyclerView.adapter = adapter
+    }
+
+    fun sessionOptions (view: View) {
+
+        val builder = AlertDialog.Builder(this@MainActivity)
+
+        builder.setTitle("Session Options")
+
+        // Finally, make the alert dialog using builder
+        val dialog: AlertDialog = builder.create()
+
+        // Display the alert dialog on app interface
+        dialog.show()
+
     }
 
     fun startSession (view: View) {

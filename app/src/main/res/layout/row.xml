@@ -94,9 +94,11 @@
             />
 
         <ImageButton
+            android:id="@+id/optionsIcon"
             android:layout_width="30sp"
             android:layout_height="50sp"
             android:layout_alignParentRight="true"
+            android:onClick="sessionOptions"
             style="?android:attr/actionOverflowButtonStyle"/>
 
     </RelativeLayout>
