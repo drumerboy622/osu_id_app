@@ -83,18 +83,20 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                search searchIt=new search();
 
                 Bundle get_intent = getIntent().getExtras();
                 String file_name = get_intent.getString("FileName");
                 String path = get_intent.getString("Path");
                 boolean exists = true;
 
-                try {
                     File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/Android/media/com.osu_id_app");
                     Path filePath = Paths.get(dir.getAbsolutePath());
                     System.out.println(filePath);
                     System.out.println(barcode.displayValue);
 
+                    filePath = searchIt.myMethod(filePath, barcode.displayValue);
+/*
                     Stream<Path> stream = Files.find(filePath, 1000,
                             (pathA, basicFileAttributes) -> {
                                 File file = pathA.toFile();
@@ -103,7 +105,7 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                             });
 
                     filePath = stream.findFirst().orElse(null);
-
+*/
                     try {
                         System.out.println(filePath.toString());
                         exists = filePath.toString().isEmpty();
@@ -112,13 +114,15 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                         System.out.println("No File matches");
                     }
                         if (!exists) {
+
+                            String unreversed = searchIt.myMethod2(filePath);
                             //Get the file_name
-                            String reversed = new StringBuilder(filePath.toString()).reverse().toString();
+/*                            String reversed = new StringBuilder(filePath.toString()).reverse().toString();
                             int start = reversed.indexOf('/');
                             int end = reversed.indexOf('/', reversed.indexOf('/') + 1);
                             String shortened = reversed.substring(start + 1, end);
                             String unreversed = new StringBuilder(shortened).reverse().toString();
-
+*/
                             //Send Intent to Review activity
                             Intent intent = new Intent(barcode_scan.this, Review.class);
                             intent.putExtra("FileName", unreversed);
@@ -134,9 +138,6 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                             startActivity(intent);
                         }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         });
     }
