@@ -21,7 +21,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="164dp"
@@ -47,76 +46,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-
-    <TableLayout
+    <TextView
+        android:id="@+id/newSessionContainer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:layout_marginTop="24dp"
         android:background="#333333"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/page_header">
+    </TextView>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="bottom">
+    <Button
+        android:id="@+id/start_new_session"
+        android:layout_width="259dp"
+        android:layout_height="50dp"
+        android:onClick="startSession"
+        android:text="@string/new_session"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.00"
+        app:layout_constraintStart_toStartOf="@id/newSessionContainer"
+        app:layout_constraintTop_toTopOf="@id/newSessionContainer"/>
 
-            <TextView
-                android:id="@+id/session_header"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="bottom"
-                android:text="@string/session_name_header"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+    <TextView
+        android:id="@+id/cardContainer"
+        android:layout_width="0dp"
+        android:layout_height="700dp"
+        android:layout_marginTop="0dp"
+        android:background="#fff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/newSessionContainer">
+    </TextView>
 
-            <TextView
-                android:id="@+id/progress_header"
-                android:layout_width="91dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:gravity="bottom"
-                android:text="@string/progress_header"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/session_card_template"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/cardContainer"
+        app:layout_constraintTop_toTopOf="@id/cardContainer"/>
+    />
 
-            <TextView
-                android:id="@+id/date_header"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="bottom"
-                android:text="@string/date_header"
-                android:textAlignment="viewEnd"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/start_new_session"
-                android:layout_width="259dp"
-                android:layout_height="match_parent"
-                android:onClick="startSession"
-                android:text="@string/new_session" />
-
-        </TableRow>
-
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableLayout>
-
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="1000dp"
+        app:layout_constraintStart_toStartOf="@id/cardContainer"
+        app:layout_constraintTop_toTopOf="@id/cardContainer"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
