@@ -15,7 +15,7 @@
         >
 
         <TextView
-            android:layout_width="170sp"
+            android:layout_width="275sp"
             android:layout_height="wrap_content"
             android:id="@+id/SessionTitle"
             android:text="Session Title"
