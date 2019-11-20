@@ -144,6 +144,11 @@ class photo_session : AppCompatActivity() {
 
                         randomIntent.putExtra("FileName", fileName)
                         randomIntent.putExtra("FilePath", file.absolutePath)
+
+                        println("333333333333333")
+                        println(file.absolutePath)
+                        println("444444444444444")
+
                         randomIntent.putExtra("student_barcode", barcode)
 
                         startActivity(randomIntent)

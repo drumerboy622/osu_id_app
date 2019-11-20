@@ -4,6 +4,7 @@ package com.e.osu_id_app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.se.omapi.Session
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import android.widget.EditText
@@ -11,6 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import java.io.File
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.text.SimpleDateFormat
+import java.util.stream.Collectors
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +29,20 @@ class MainActivity : AppCompatActivity() {
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = layoutManager
 
-        val adapter = SessionCardAdapter(this, Supplier.sessions)
+        val savedSessions = ArrayList<SessionCard>()
+        val sdf = SimpleDateFormat("MM/dd/yyyy 'at' HH:mm:ss z")
+
+        // using extension function walk
+        File("/storage/emulated/0/Android/media/com.osu_id_app/").walk().forEach {
+            //Create a Path object
+            val path = Paths.get(it.absolutePath)
+
+            if(Files.isDirectory(path) && it.name != "com.osu_id_app"){
+                savedSessions.add(SessionCard(it.name, sdf.format(it.lastModified()), "Upload Complete") )
+            }
+        }
+
+        var adapter = SessionCardAdapter(this, savedSessions)
         recyclerView.adapter = adapter
     }
 
