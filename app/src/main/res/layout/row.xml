@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        >
+
+        <TextView
+            android:layout_width="275sp"
+            android:layout_height="wrap_content"
+            android:id="@+id/SessionTitle"
+            android:text="Session Title"
+            android:textSize="22sp"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:paddingRight="20dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Session_Date"
+            android:text="11/18/2019"
+            android:textSize="16sp"
+            android:textColor="#222"
+            android:textStyle="bold"
+            android:layout_below="@id/SessionTitle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Session_Number_Uploaded"
+            android:text="22 of 22 Uploaded"
+            android:textSize="14sp"
+            android:textColor="#222"
+            android:layout_below="@id/Session_Date" />
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/photoPreview1"
+            android:src="@mipmap/ic_launcher"
+            android:layout_toRightOf="@id/SessionTitle"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            />
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/photoPreview2"
+            android:src="@mipmap/ic_launcher"
+            android:layout_toRightOf="@id/photoPreview1"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            />
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/photoPreview3"
+            android:src="@mipmap/ic_launcher"
+            android:layout_toRightOf="@id/photoPreview2"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            />
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/photoPreview4"
+            android:src="@mipmap/ic_launcher"
+            android:layout_toRightOf="@id/photoPreview3"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            />
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/photoPreview5"
+            android:src="@mipmap/ic_launcher"
+            android:layout_toRightOf="@id/photoPreview4"
+            android:layout_marginTop="5dp"
+            />
+
+        <ImageButton
+            android:id="@+id/optionsIcon"
+            android:layout_width="30sp"
+            android:layout_height="50sp"
+            android:layout_alignParentRight="true"
+            android:onClick="sessionOptions"
+            style="?android:attr/actionOverflowButtonStyle"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
