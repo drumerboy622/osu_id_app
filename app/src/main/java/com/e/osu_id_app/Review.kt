@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import junit.framework.TestCase
+import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
 import org.junit.Test
 import java.io.IOException
@@ -33,6 +34,19 @@ class Review : AppCompatActivity() {
         // Get Values from last activity
         val barcode: String = intent.getStringExtra("student_barcode") as String
         val fileName: String = intent.getStringExtra("FileName") as String
+        var textView2 = findViewById<TextView>(R.id.textView12)
+
+        val savedFileName: String
+        try {
+            savedFileName = intent.getStringExtra("SavedFileName") as String
+            textView2.text = savedFileName
+        } catch (e: Exception){
+            textView2.text = fileName
+        }
+
+
+
+
         val filePath: String = intent.getStringExtra("FilePath") as String
         val path: String = intent.getStringExtra("Path") as String
 
@@ -49,8 +63,7 @@ class Review : AppCompatActivity() {
         //Display Barcode
         var textView = findViewById<TextView>(R.id.textView11)
         textView.text = barcode
-        var textView2 = findViewById<TextView>(R.id.textView12)
-        textView2.text = fileName
+
 
         var a: A=A(file)
 
@@ -69,7 +82,7 @@ class Review : AppCompatActivity() {
             val intent = Intent(this, barcode_scan::class.java)
             // Create connection parameters
 
-            if(path == "sent") {
+            if(path == "stage") {
                 a.start()
             }
 
@@ -91,6 +104,9 @@ class Review : AppCompatActivity() {
             builder.setPositiveButton("Yes"){dialog, which -> run {
                 // Send intent Extras student_barcode and FileName
                 val intent = Intent(this, photo_session::class.java)
+
+                file.delete()
+
                 intent.putExtra("student_barcode", barcode)
                 intent.putExtra("FileName", fileName)
                 intent.putExtra("Path", path)
@@ -141,23 +157,6 @@ class Review : AppCompatActivity() {
         }
     }
 
-        fun editSession(view: View) {
-
-            //val randomIntent = Intent(this@MainActivity, barcode_scan::class.java)
-            val builder = AlertDialog.Builder(this@Review)
-
-            builder.setTitle("Change Session - COMING SOON")
-
-            // Display a neutral button on alert dialog
-            builder.setNeutralButton("Cancel"){_,_ -> }
-
-            // Finally, make the alert dialog using builder
-            val dialog: AlertDialog = builder.create()
-
-            // Display the alert dialog on app interface
-            dialog.show()
-
-        }
 
 
 }

@@ -125,7 +125,8 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
 */
                             //Send Intent to Review activity
                             Intent intent = new Intent(barcode_scan.this, Review.class);
-                            intent.putExtra("FileName", unreversed);
+                            intent.putExtra("FileName", file_name);
+                            intent.putExtra("SavedFileName", unreversed);
                             intent.putExtra("Path", path);
                             intent.putExtra("student_barcode", barcode.displayValue);
                             intent.putExtra("FilePath", filePath.toString());

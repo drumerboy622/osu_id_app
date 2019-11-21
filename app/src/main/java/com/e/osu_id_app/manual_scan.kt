@@ -67,7 +67,8 @@ class manual_scan : AppCompatActivity() {
             val unreversed = searchIt.myMethod2(filePath)
             randomIntent.putExtra("student_barcode", barcode)
             randomIntent.putExtra("Path", path)
-            randomIntent.putExtra("FileName", unreversed)
+            randomIntent.putExtra("FileName", fileName)
+            randomIntent.putExtra("SavedFileName", unreversed)
             randomIntent.putExtra("FilePath", filePath.toString())
             startActivity(randomIntent)
         } else {

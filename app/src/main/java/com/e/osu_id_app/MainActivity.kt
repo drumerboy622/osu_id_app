@@ -99,8 +99,8 @@ class MainActivity : AppCompatActivity() {
         builder.setPositiveButton("Start new Session"){dialog, which -> run {
 
             var input1 = mDialogView.editText.text.toString()
-            var fileString = "sent/$input1"
-            var path = "sent"
+            var fileString = "stage/$input1"
+            var path = "stage"
             if(mDialogView.checkBox.isChecked) {
                 fileString = "unsent/$input1"
                 path = "unsent"
