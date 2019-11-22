@@ -54,9 +54,10 @@ class MainActivity : AppCompatActivity() {
                     if(it.isFile) {
                         filesTotalCnt++
                     }
+                    println(it)
                 }
 
-                savedSessions.add(SessionCard(it.name, it.lastModified(), sdf.format(it.lastModified()),filesTotalCnt.toString() + " Files") )
+                savedSessions.add(SessionCard(it.absolutePath, it.name, it.lastModified(), sdf.format(it.lastModified()),filesTotalCnt.toString() + " Files") )
 
             }
         }
@@ -69,19 +70,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun sessionOptions (view: View) {
-
-        val builder = AlertDialog.Builder(this@MainActivity)
-
-        builder.setTitle("Session Options")
-
-        // Finally, make the alert dialog using builder
-        val dialog: AlertDialog = builder.create()
-
-        // Display the alert dialog on app interface
-        dialog.show()
-
-    }
 
     fun startSession (view: View) {
 
