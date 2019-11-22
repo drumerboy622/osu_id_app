@@ -14,16 +14,18 @@ public class search {
                     (pathA, basicFileAttributes) -> {
                         File file = pathA.toFile();
                         return !file.isDirectory() &&
-                                file.getName().contains(barcode + ".jpg");
+                                file.getName().contains(barcode);
                     });
 
             filePath = stream.findFirst().orElse(null);
-
+            System.out.println(filePath);
             return filePath;
         } catch(IOException e){
             return null;
         }
     }
+
+
 
     public String myMethod2(Path filePath) {
         //Get the file_name
@@ -34,6 +36,23 @@ public class search {
         String unreversed = new StringBuilder(shortened).reverse().toString();
 
         return unreversed;
+    }
+
+    public Path myMethod3(Path filePath, String barcode){
+        try {
+            Stream<Path> stream = Files.find(filePath, 1000,
+                    (pathA, basicFileAttributes) -> {
+                        File file = pathA.toFile();
+                        return file.isDirectory() &&
+                                file.getName().contains(barcode);
+                    });
+
+            filePath = stream.findFirst().orElse(null);
+            System.out.println(filePath);
+            return filePath;
+        } catch(IOException e){
+            return null;
+        }
     }
 
 }

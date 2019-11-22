@@ -96,21 +96,49 @@ class MainActivity : AppCompatActivity() {
 
         builder.setPositiveButton("Start new Session"){dialog, which -> run {
 
+            val searchIt = search()
             var input1 = mDialogView.editText.text.toString()
-            var fileString = "stage/$input1"
-            var path = "stage"
-            if(mDialogView.checkBox.isChecked) {
-                fileString = "unsent/$input1"
-                path = "unsent"
+            var exists = true
+
+
+            var dir = File(externalMediaDirs.first().toString())
+            var filePath = Paths.get(dir.getAbsolutePath())
+            println(filePath)
+            println(input1)
+
+            filePath = searchIt.myMethod3(filePath, input1)
+            println(filePath)
+
+            try {
+                exists = filePath.toString().isEmpty()
+            } catch (e: Exception){
+                println("No File matches")
             }
 
-            //Create Folder
-            var filename = File(externalMediaDirs.first(), fileString)
-            filename?.mkdirs()
+            if (!exists){
 
-            randomIntent.putExtra("FileName", input1)
-            randomIntent.putExtra("Path", path)
-            startActivity(randomIntent)
+                Toast.makeText(this, "Name Already In Use", Toast.LENGTH_SHORT).show()
+
+            } else {
+                var fileString = "stage/$input1"
+                var path = "stage"
+                if(mDialogView.checkBox.isChecked) {
+                    fileString = "unsent/$input1"
+                    path = "unsent"
+                }
+
+
+                //Create Folder
+                var filename = File(externalMediaDirs.first(), fileString)
+                filename?.mkdirs()
+
+                randomIntent.putExtra("FileName", input1)
+                randomIntent.putExtra("Path", path)
+                startActivity(randomIntent)
+            }
+
+
+
         }
         }
 
