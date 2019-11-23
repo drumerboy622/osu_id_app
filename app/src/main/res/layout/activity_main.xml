@@ -11,7 +11,7 @@
         android:id="@+id/textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#333333"
+        android:background="#444444"
         android:text="@string/header"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -51,7 +51,7 @@
         android:layout_width="0dp"
         android:layout_height="52dp"
         android:layout_marginTop="24dp"
-        android:background="#333333"
+        android:background="#444444"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,6 +94,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="1000dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@id/cardContainer"
-        app:layout_constraintTop_toTopOf="@id/cardContainer"/>
+        app:layout_constraintTop_toTopOf="@+id/session_card_template" />
 </androidx.constraintlayout.widget.ConstraintLayout>
