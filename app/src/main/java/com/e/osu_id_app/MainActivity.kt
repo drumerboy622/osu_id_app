@@ -48,16 +48,34 @@ class MainActivity : AppCompatActivity() {
 
                 filesTotalCnt = 0
                 filesUploadedCnt = 0
+                var path1: String = "Null"
+                var path2: String = "Null"
+                var path3: String = "Null"
 
                 // Get files from sub directories
                 File(it.absolutePath).walk().forEach {
                     if(it.isFile) {
+
+                        if(filesTotalCnt == 0)
+                        {
+                            path1 = it.absolutePath
+                            println(path1)
+                        }
+                        if(filesTotalCnt == 1)
+                        {
+                            path2 = it.absolutePath
+                            println(path2)
+                        }
+                        if(filesTotalCnt == 2)
+                        {
+                            path3 = it.absolutePath
+                            println(path3)
+                        }
                         filesTotalCnt++
                     }
-                    println(it)
                 }
 
-                savedSessions.add(SessionCard(it.absolutePath, it.name, it.lastModified(), sdf.format(it.lastModified()),filesTotalCnt.toString() + " Files") )
+                savedSessions.add(SessionCard(path1, path2, path3, it.absolutePath, it.name, it.lastModified(), sdf.format(it.lastModified()),filesTotalCnt.toString() + " Files") )
 
             }
         }
@@ -91,8 +109,7 @@ class MainActivity : AppCompatActivity() {
 
             var dir = File(externalMediaDirs.first().toString())
             var filePath = Paths.get(dir.getAbsolutePath())
-            println(filePath)
-            println(input1)
+
 
             filePath = searchIt.myMethod3(filePath, input1)
             println(filePath)

@@ -96,16 +96,7 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                     System.out.println(barcode.displayValue);
 
                     filePath = searchIt.myMethod(filePath, barcode.displayValue);
-/*
-                    Stream<Path> stream = Files.find(filePath, 1000,
-                            (pathA, basicFileAttributes) -> {
-                                File file = pathA.toFile();
-                                return !file.isDirectory() &&
-                                        file.getName().contains(barcode.displayValue + ".jpg");
-                            });
 
-                    filePath = stream.findFirst().orElse(null);
-*/
                     try {
                         System.out.println(filePath.toString());
                         exists = filePath.toString().isEmpty();
@@ -116,13 +107,7 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                         if (!exists) {
 
                             String unreversed = searchIt.myMethod2(filePath);
-                            //Get the file_name
-/*                            String reversed = new StringBuilder(filePath.toString()).reverse().toString();
-                            int start = reversed.indexOf('/');
-                            int end = reversed.indexOf('/', reversed.indexOf('/') + 1);
-                            String shortened = reversed.substring(start + 1, end);
-                            String unreversed = new StringBuilder(shortened).reverse().toString();
-*/
+
                             //Send Intent to Review activity
                             Intent intent = new Intent(barcode_scan.this, Review.class);
                             intent.putExtra("FileName", file_name);
