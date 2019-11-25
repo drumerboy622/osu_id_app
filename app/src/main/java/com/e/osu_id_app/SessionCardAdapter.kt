@@ -39,7 +39,7 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
             val file = File(sessionCard!!.path)
             val path = file.getParentFile().getName()
 
-            if (path == "stage")
+            if (path == "sent")
             {
                 itemView.imageButton5.setImageResource(R.drawable.upload1)
             }
@@ -111,14 +111,14 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
             itemView.imageButton5.setOnClickListener {
                 val intent = Intent(context, MainActivity::class.java)
-                if (path == "stage"){
+                if (path == "sent"){
                     var filePath = Paths.get(file.getAbsolutePath())
                     var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/unsent/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir.getAbsolutePath())
                     move(filePath, newFilePath)
                 } else {
                     var filePath = Paths.get(file.getAbsolutePath())
-                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/stage/" + sessionCard!!.title)
+                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/sent/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir.getAbsolutePath())
                     move(filePath, newFilePath)
                 }
@@ -153,7 +153,9 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
                         val intent = Intent(context, MainActivity::class.java)
                         val file = File(sessionCard!!.path)
+                        val stageFile = File("/storage/emulated/0/Android/media/com.osu_id_app/stage/", sessionCard!!.title)
                         deleteRecursive(file)
+                        deleteRecursive(stageFile)
                         context.startActivity(intent)
                     }}
                     // Display a neutral button on alert dialog

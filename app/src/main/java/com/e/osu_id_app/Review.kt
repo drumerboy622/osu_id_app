@@ -82,7 +82,7 @@ class Review : AppCompatActivity() {
             val intent = Intent(this, barcode_scan::class.java)
             // Create connection parameters
 
-            if(path == "stage") {
+            if(path == "sent") {
                 a.start()
             }
 

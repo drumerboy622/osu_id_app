@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             //Create a Path object
             val path = Paths.get(it.absolutePath)
 
-            if(Files.isDirectory(path) && it.name != "com.osu_id_app"  && it.parentFile.name != "com.osu_id_app"){
+            if(Files.isDirectory(path) && it.name != "com.osu_id_app"  && it.parentFile.name != "com.osu_id_app" && it.parentFile.name != "stage"){
 
                 filesTotalCnt = 0
                 filesUploadedCnt = 0
@@ -125,8 +125,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Name Already In Use", Toast.LENGTH_SHORT).show()
 
             } else {
-                var fileString = "stage/$input1"
-                var path = "stage"
+                var fileString = "sent/$input1"
+                var path = "sent"
+
                 if(mDialogView.checkBox.isChecked) {
                     fileString = "unsent/$input1"
                     path = "unsent"
@@ -134,6 +135,8 @@ class MainActivity : AppCompatActivity() {
 
 
                 //Create Folder
+                var createStage = File(externalMediaDirs.first(), "stage/$input1")
+                createStage?.mkdirs()
                 var filename = File(externalMediaDirs.first(), fileString)
                 filename?.mkdirs()
 
