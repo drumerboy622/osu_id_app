@@ -14,7 +14,11 @@ import kotlinx.android.synthetic.main.activity_file.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import java.io.File
 import androidx.recyclerview.widget.RecyclerView
+import junit.framework.TestCase
 import kotlinx.android.synthetic.main.activity_main.*
+import org.apache.commons.lang3.StringUtils
+import org.junit.Test
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
@@ -161,3 +165,5 @@ class MainActivity : AppCompatActivity() {
 
     }
 }
+
+

@@ -59,12 +59,12 @@ internal class UploadTask(sftpConnectionParameters: SftpConnectionParameters, fi
 
                 // Upload the file
                 sftpChannel?.put(localFilePath, remoteFilePath)
-                KsftpLog.logInfo("Uploaded '$localFilePath' to '$remoteFilePath'")
+                println("Uploaded '$localFilePath' to '$remoteFilePath'")
             }
 
             //try {Thread.sleep(1000*10);} catch (e: Exception) {/* no-op */}
 
-            KsftpLog.logInfo("Took " + KsftpLog.formatMillis(System.currentTimeMillis() - startTime) +
+            println("Took x seconds " +
                     " to process " + filePairs.size + " file uploads")
 
             return true

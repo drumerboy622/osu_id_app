@@ -10,18 +10,21 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.row.view.*
 import java.io.File
 import android.graphics.BitmapFactory
+import junit.framework.TestCase
+import org.apache.commons.lang3.StringUtils
+import org.junit.Test
+import java.io.IOException
 import java.nio.file.Files.move
 import java.nio.file.Paths
 
 
 
 class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCard>) : RecyclerView.Adapter<SessionCardAdapter.MyViewHolder>(){
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 
         val view = LayoutInflater.from(context).inflate(R.layout.row, parent, false)
         return MyViewHolder(view)
-
-
     }
 
     override fun getItemCount(): Int {
@@ -116,19 +119,26 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                     var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/unsent/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir.getAbsolutePath())
                     move(filePath, newFilePath)
-                } else {
+                }
+
+                else {   // Files are in unsent Folder
+
+                    // Change Filepaths for existing photos to sent
                     var filePath = Paths.get(file.getAbsolutePath())
                     var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/sent/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir.getAbsolutePath())
                     move(filePath, newFilePath)
+
+                    // Initiate Batch Upload on Sent folder
+                    var b: B=B(dir)
+                    b.start()
+
                 }
+
 
 
                 context.startActivity(intent)
             }
-
-
-
 
 
             // Delete Session
@@ -172,8 +182,148 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
         }
 
+}
+
+//threading upload to background
+class B(val dir: File) : Thread()
+{
+    var filesForUpload: Array<File>? = null
+    val remoteDirectoryForUploads = "OSU_ID_APP/"
 
 
 
+    override fun run() {
 
+        println("44444444444444444444444444")
+        println("dir is" + dir.absolutePath)
+
+        // Initiate Connection
+        sftpClient = SftpClient.create(createConnectionParameters())
+
+        // Get Files for upload
+        filesForUpload = dir.listFiles()
+
+        val remoteFilePaths = ArrayList<String>()
+        val filePairs = ArrayList<FilePair>()
+        for (uploadFile in filesForUpload!!) {
+            val remoteFilePath = remoteDirectoryForUploads + File.separator + uploadFile.name
+            filePairs.add(FilePair(uploadFile.path, remoteFilePath))
+            remoteFilePaths.add(remoteFilePath)
+        }
+
+        // Upload to SFTP
+        if (sftpClient!!.upload(filePairs, 120*filesForUpload!!.size)) {
+
+            // Successful upload
+            println("Batch Upload Successful")
+
+        }
+
+        else {  // Failed Upload
+
+            println("Batch Upload Failed")
+
+            // Move files to stage folder
+            //var filePath = Paths.get(dir.getAbsolutePath())
+            //var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/sent/" + sessionCard!!.title)
+            //var newFilePath = Paths.get(dir.getAbsolutePath())
+            //move(filePath, newFilePath)
+        }
+
+
+    }
+
+    // These environment variables must be defined on your machine
+    private val ENVIRONMENT_VARIABLE_HOST = "KSFTP_HOST"
+    private val ENVIRONMENT_VARIABLE_PORT = "KSFTP_PORT"
+    private val ENVIRONMENT_VARIABLE_USERNAME = "KSFTP_USERNAME"
+    private val ENVIRONMENT_VARIABLE_PASSWORD = "KSFTP_PASSWORD"
+
+    // Remote directory for upload - a folder at the user's root level on SFTP server
+    // Directory will be created if it does not exist
+
+    private var testFiles: Array<File>? = null
+    private var sftpClient: SftpClient? = null
+
+
+    /**
+     * Gets a file from the test resources package, or throws an exception if the test file doesn't exist.
+     * @param relativeFilePath the file path, relative to "src/test/resources"
+     */
+    @Throws(Exception::class)
+    private fun getImagesDirectory(relativeFilePath: String): File {
+        var theRelativeFilePath = relativeFilePath
+        val url = photo_session::class.java.getResource(theRelativeFilePath)
+
+        val testFile = File(url!!.file)
+        TestCase.assertTrue("No test file exists for relative path '$theRelativeFilePath'", testFile.exists())
+        return testFile
+    }
+
+    /**
+     * Ensures that a directory exists for the specified path, and returns the [File],
+     * or `null` if it could not be created.
+
+     * @param directoryPath the directory path to ensure
+     */
+    @Throws(IOException::class)
+    private fun ensureDirectory(directoryPath: String): File {
+        val errorMessage = "Could not create directory for path '$directoryPath'"
+        if (StringUtils.isEmpty(directoryPath)) {
+            throw IOException(errorMessage)
+        }
+
+        val directory = File(directoryPath)
+        if (directory.exists()) {
+            if (!directory.isDirectory) {
+                throw IOException("File '$directory' exists and is not a directory. Unable to create directory.")
+            }
+        } else {
+            if (!directory.mkdirs()) {
+                // Double-check that some other thread or process hasn't made
+                // the directory in the background
+                if (!directory.isDirectory) {
+                    throw IOException("Unable to create directory '$directory'")
+                }
+            }
+        }
+
+        if (!directory.isDirectory) {
+            throw IOException(errorMessage)
+        }
+        return directory
+    }
+
+    /**
+     * Creates new connection parameters.
+     */
+    private fun createConnectionParameters(): SftpConnectionParameters {
+        return SftpConnectionParametersBuilder.newInstance().createConnectionParameters()
+            .withHostFromEnvironmentVariable(ENVIRONMENT_VARIABLE_HOST)
+            .withPortFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PORT)
+            .withUsernameFromEnvironmentVariable(ENVIRONMENT_VARIABLE_USERNAME)
+            .withPasswordFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PASSWORD)
+            .create()
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun testAllSftpOperations() {
+        executeBatchUpload()
+    }
+
+    @Throws(Exception::class)
+    private fun executeBatchUpload() {
+
+        val remoteFilePaths = java.util.ArrayList<String>()
+        val filePairs = java.util.ArrayList<FilePair>()
+        for (testFile in testFiles!!) {
+            val remoteFilePath = remoteDirectoryForUploads + File.separator + testFile.name
+            filePairs.add(FilePair(testFile.path, remoteFilePath))
+            remoteFilePaths.add(remoteFilePath)
+        }
+
+        TestCase.assertTrue("Files were not uploaded!", sftpClient!!.upload(filePairs, 120*testFiles!!.size))
+        TestCase.assertTrue("Files don't exist on server!", sftpClient!!.checkFiles(remoteFilePaths))
+    }
 }

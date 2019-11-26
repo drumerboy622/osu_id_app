@@ -209,7 +209,7 @@ class A(val file: File) : Thread()
 
     // Remote directory for upload - a folder at the user's root level on SFTP server
 // Directory will be created if it does not exist
-    private val remoteDirectoryForUploads = "Folder1new/"
+    private val remoteDirectoryForUploads = "Folder2new/"
 
     private var testFiles: Array<File>? = null
     private var sftpClient: SftpClient? = null
