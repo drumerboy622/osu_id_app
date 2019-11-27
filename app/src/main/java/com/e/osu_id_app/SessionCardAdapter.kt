@@ -96,6 +96,7 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                     run {
                         randomIntent.putExtra("FileName", sessionCard!!.title)
                         randomIntent.putExtra("Path", path)
+                        randomIntent.putExtra("LiveUpload", "true")
                         context.startActivity(randomIntent)
                     }
                 }
