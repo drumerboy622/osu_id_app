@@ -129,23 +129,23 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Name Already In Use", Toast.LENGTH_SHORT).show()
 
             } else {
-                var fileString = "sent/$input1"
-                var path = "sent"
+                var fileString = "unsent/$input1"
+                var liveUpload = "true"
+                var path = "unsent"
 
                 if(mDialogView.checkBox.isChecked) {
-                    fileString = "unsent/$input1"
-                    path = "unsent"
+                    liveUpload = "false"
                 }
 
-
-                //Create Folder
-                var createStage = File(externalMediaDirs.first(), "stage/$input1")
-                createStage?.mkdirs()
+                // Create Sent and Unsent Folders
+                var createSentDir = File(externalMediaDirs.first(), "sent/$input1")
+                createSentDir?.mkdirs()
                 var filename = File(externalMediaDirs.first(), fileString)
                 filename?.mkdirs()
 
                 randomIntent.putExtra("FileName", input1)
                 randomIntent.putExtra("Path", path)
+                randomIntent.putExtra("LiveUpload", liveUpload)
                 startActivity(randomIntent)
             }
 

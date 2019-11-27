@@ -29,8 +29,10 @@ class manual_scan : AppCompatActivity() {
         val randomIntent = Intent(this@manual_scan, barcode_scan::class.java)
         val fileName: String = intent.getStringExtra("FileName") as String
         val path: String = intent.getStringExtra("Path") as String
+        val liveUpload: String = intent.getStringExtra("LiveUpload") as String
         randomIntent.putExtra("FileName", fileName)
         randomIntent.putExtra("Path", path)
+        randomIntent.putExtra("LiveUpload", liveUpload)
         startActivity(randomIntent)
     }
 
@@ -41,6 +43,7 @@ class manual_scan : AppCompatActivity() {
         val barcode = input.getText().toString()
         val path: String = intent.getStringExtra("Path") as String
         val fileName: String = intent.getStringExtra("FileName") as String
+        val liveUpload: String = intent.getStringExtra("LiveUpload") as String
 
         var exists = true
 
@@ -70,12 +73,14 @@ class manual_scan : AppCompatActivity() {
             randomIntent.putExtra("FileName", fileName)
             randomIntent.putExtra("SavedFileName", unreversed)
             randomIntent.putExtra("FilePath", filePath.toString())
+            randomIntent.putExtra("LiveUpload", liveUpload)
             startActivity(randomIntent)
         } else {
             val randomIntent = Intent(this@manual_scan, photo_session::class.java)
             randomIntent.putExtra("student_barcode", barcode)
             randomIntent.putExtra("Path", path)
             randomIntent.putExtra("FileName", fileName)
+            randomIntent.putExtra("LiveUpload", liveUpload)
             startActivity(randomIntent)
         }
 

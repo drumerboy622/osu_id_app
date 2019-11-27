@@ -19,6 +19,8 @@ import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
 import org.junit.Test
 import java.io.IOException
+import java.nio.file.Files.move
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.concurrent.Executors
@@ -34,6 +36,7 @@ class Review : AppCompatActivity() {
         // Get Values from last activity
         val barcode: String = intent.getStringExtra("student_barcode") as String
         val fileName: String = intent.getStringExtra("FileName") as String
+        val liveUpload: String = intent.getStringExtra("LiveUpload") as String
         var textView2 = findViewById<TextView>(R.id.textView12)
 
         val savedFileName: String
@@ -82,12 +85,13 @@ class Review : AppCompatActivity() {
             val intent = Intent(this, barcode_scan::class.java)
             // Create connection parameters
 
-            if(path == "sent") {
+            if(liveUpload == "true") {
                 a.start()
             }
 
             intent.putExtra("FileName", fileName)
             intent.putExtra("Path", path)
+            intent.putExtra("LiveUpload", liveUpload)
 
             startActivity(intent)
         }
@@ -110,6 +114,7 @@ class Review : AppCompatActivity() {
                 intent.putExtra("student_barcode", barcode)
                 intent.putExtra("FileName", fileName)
                 intent.putExtra("Path", path)
+                intent.putExtra("LiveUpload", liveUpload)
                 startActivity(intent)
             }}
             // Display a neutral button on alert dialog
@@ -142,6 +147,7 @@ class Review : AppCompatActivity() {
 
                 intent.putExtra("FileName", fileName)
                 intent.putExtra("Path", path)
+                intent.putExtra("LiveUpload", liveUpload)
                 startActivity(intent)
             }}
 
@@ -196,9 +202,17 @@ class A(val file: File) : Thread()
         sftpClient = SftpClient.create(createConnectionParameters())
 
         // Upload to SFTP
-        sftpClient!!.upload(file.absolutePath, remoteDirectoryForUploads, 300);
+        if(sftpClient!!.upload(file.absolutePath, remoteDirectoryForUploads, 300)){
 
-
+            println("Single File Upload Successful")
+            var filePath = Paths.get(file.getAbsolutePath())
+            var filePathStr = file.absolutePath
+            var newFilePathStr = filePathStr.replaceFirst("unsent", "sent", true)
+            var newFilePathDir = File(newFilePathStr)
+            var newFilePath = Paths.get(newFilePathDir.getAbsolutePath())
+            move(filePath, newFilePath)
+            println("Moved file to sent folder")
+        }
     }
 
     // These environment variables must be defined on your machine

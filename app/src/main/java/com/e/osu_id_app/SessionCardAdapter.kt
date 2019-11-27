@@ -114,6 +114,8 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
             itemView.imageButton5.setOnClickListener {
                 val intent = Intent(context, MainActivity::class.java)
+
+
                 if (path == "sent"){
                     var filePath = Paths.get(file.getAbsolutePath())
                     var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/unsent/" + sessionCard!!.title)
@@ -123,13 +125,10 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
                 else {   // Files are in unsent Folder
 
-                    // Change Filepaths for existing photos to sent
-                    var filePath = Paths.get(file.getAbsolutePath())
-                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/sent/" + sessionCard!!.title)
-                    var newFilePath = Paths.get(dir.getAbsolutePath())
-                    move(filePath, newFilePath)
 
-                    // Initiate Batch Upload on Sent folder
+                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/unsent/" + sessionCard!!.title)
+
+                    // Initiate Batch Upload on unsent folder
                     var b: B=B(dir)
                     b.start()
 
@@ -217,17 +216,23 @@ class B(val dir: File) : Thread()
             // Successful upload
             println("Batch Upload Successful")
 
+            // Move files to sent folder
+            for (uploadFile in filesForUpload!!) {
+                var filePath = Paths.get(uploadFile.getAbsolutePath())
+                var filePathStr = uploadFile.absolutePath
+                var newFilePathStr = filePathStr.replaceFirst("unsent", "sent", true)
+                var newFilePathDir = File(newFilePathStr)
+                var newFilePath = Paths.get(newFilePathDir.getAbsolutePath())
+                move(filePath, newFilePath)
+                println("Moved file to sent folder")
+            }
+
         }
 
         else {  // Failed Upload
 
             println("Batch Upload Failed")
 
-            // Move files to stage folder
-            //var filePath = Paths.get(dir.getAbsolutePath())
-            //var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/sent/" + sessionCard!!.title)
-            //var newFilePath = Paths.get(dir.getAbsolutePath())
-            //move(filePath, newFilePath)
         }
 
 

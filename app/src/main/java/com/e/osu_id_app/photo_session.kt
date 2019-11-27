@@ -87,6 +87,7 @@ class photo_session : AppCompatActivity() {
         val barcode: String = intent.getStringExtra("student_barcode") as String
         val fileName: String = intent.getStringExtra("FileName") as String
         val path: String = intent.getStringExtra("Path") as String
+        val liveUpload: String = intent.getStringExtra("LiveUpload") as String
 
         // Create configuration object for the viewfinder use case
         val previewConfig = PreviewConfig.Builder().apply {
@@ -151,6 +152,8 @@ class photo_session : AppCompatActivity() {
 
                         randomIntent.putExtra("student_barcode", barcode)
                         randomIntent.putExtra("Path", path)
+                        randomIntent.putExtra("LiveUpload", liveUpload)
+
 
                         startActivity(randomIntent)
                     }
