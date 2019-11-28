@@ -41,7 +41,7 @@ internal class UploadTask(sftpConnectionParameters: SftpConnectionParameters, fi
 
                 val localFile = File(localFilePath)
                 if (!localFile.isFile) {
-                    KsftpLog.logError("Missing local file '$localFilePath'")
+                    //KsftpLog.logError("Missing local file '$localFilePath'")
                     continue
                 }
 
@@ -51,7 +51,7 @@ internal class UploadTask(sftpConnectionParameters: SftpConnectionParameters, fi
                     sftpChannel?.cd(remoteDirectoryPath)
                 } catch (e: SftpException) {
                     sftpChannel?.mkdir(remoteDirectoryPath)
-                    KsftpLog.logInfo("Created remote directory '$remoteDirectoryPath'")
+                    //KsftpLog.logInfo("Created remote directory '$remoteDirectoryPath'")
                 } finally {
                     // Get back to our starting directory
                     sftpChannel?.cd(pwd)
@@ -59,7 +59,7 @@ internal class UploadTask(sftpConnectionParameters: SftpConnectionParameters, fi
 
                 // Upload the file
                 sftpChannel?.put(localFilePath, remoteFilePath)
-                println("Uploaded '$localFilePath' to '$remoteFilePath'")
+                //KsftpLog.logInfo("Uploaded '$localFilePath' to '$remoteFilePath'")
             }
 
             //try {Thread.sleep(1000*10);} catch (e: Exception) {/* no-op */}
