@@ -30,11 +30,8 @@ class SftpClient(val sftpConnectionParameters: SftpConnectionParameters) {
     @Throws(UploadTimeoutException::class, InterruptedException::class)
     fun upload(filePairs: List<FilePair>, timeoutInSeconds: Int): Boolean {
         if (filePairs.isEmpty()) {
-            println("55555555555555")
             return true
         }
-
-        println("666666666666666666")
 
         val tasks = mutableListOf<UploadTask>()
         filePairs.asSequence().batch(1).forEach { group ->

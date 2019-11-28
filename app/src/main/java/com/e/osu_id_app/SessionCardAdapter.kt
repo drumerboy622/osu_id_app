@@ -10,10 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.row.view.*
 import java.io.File
 import android.graphics.BitmapFactory
-import junit.framework.TestCase
-import org.apache.commons.lang3.StringUtils
-import org.junit.Test
-import java.io.IOException
 import java.nio.file.Files.move
 import java.nio.file.Paths
 
