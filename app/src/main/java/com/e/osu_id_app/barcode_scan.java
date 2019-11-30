@@ -55,8 +55,10 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                 Bundle get_intent = getIntent().getExtras();
                 String file_name = get_intent.getString("FileName");
                 String path = get_intent.getString("Path");
+                String liveUpload = get_intent.getString("LiveUpload");
                 intent.putExtra("FileName", file_name);
                 intent.putExtra("Path", path);
+                intent.putExtra("LiveUpload", liveUpload);
                 startActivity(intent);
             }
         });
@@ -88,6 +90,7 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                 Bundle get_intent = getIntent().getExtras();
                 String file_name = get_intent.getString("FileName");
                 String path = get_intent.getString("Path");
+                String liveUpload = get_intent.getString("LiveUpload");
                 boolean exists = true;
 
                     File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/Android/media/com.osu_id_app");
@@ -115,12 +118,14 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                             intent.putExtra("Path", path);
                             intent.putExtra("student_barcode", barcode.displayValue);
                             intent.putExtra("FilePath", filePath.toString());
+                            intent.putExtra("LiveUpload", liveUpload);
                             startActivity(intent);
                         } else {
                             Intent intent = new Intent(barcode_scan.this, photo_session.class);
                             intent.putExtra("FileName", file_name);
                             intent.putExtra("Path", path);
                             intent.putExtra("student_barcode", barcode.displayValue);
+                            intent.putExtra("LiveUpload", liveUpload);
                             startActivity(intent);
                         }
 

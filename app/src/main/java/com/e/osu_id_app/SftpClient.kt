@@ -33,7 +33,12 @@ class SftpClient(val sftpConnectionParameters: SftpConnectionParameters) {
             return true
         }
 
-        return uploadHelper(listOf(UploadTask(sftpConnectionParameters, filePairs)), timeoutInSeconds)
+        val tasks = mutableListOf<UploadTask>()
+        filePairs.asSequence().batch(1).forEach { group ->
+            tasks.add(UploadTask(sftpConnectionParameters, group))
+        }
+
+        return uploadHelper(tasks, timeoutInSeconds)
     }
 
     @Throws(UploadTimeoutException::class, InterruptedException::class)

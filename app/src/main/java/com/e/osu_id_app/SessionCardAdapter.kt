@@ -13,22 +13,24 @@ import android.graphics.BitmapFactory
 import java.nio.file.Files.move
 import java.nio.file.Paths
 
-
-
 class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCard>) : RecyclerView.Adapter<SessionCardAdapter.MyViewHolder>(){
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 
+        // Create the viewHolder for the sessionCard
         val view = LayoutInflater.from(context).inflate(R.layout.row, parent, false)
         return MyViewHolder(view)
-
-
     }
 
     override fun getItemCount(): Int {
+
+        // Get the number of sessionCards
         return sessioncards.size
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
+        // Bind the data from list to viewHolder
         val sessioncard = sessioncards[position]
         holder.setData(sessioncard, position)
     }
@@ -43,7 +45,6 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
             {
                 itemView.imageButton5.setImageResource(R.drawable.upload1)
             }
-
 
             itemView.SessionTitle.text = sessionCard!!.title
             itemView.Session_Date.text = sessionCard!!.dateStr
@@ -77,10 +78,6 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                 itemView.photoPreview3.setVisibility(View.GONE)
             }
 
-
-
-
-
             // Continue Session
             itemView.imageButton4.setOnClickListener {
                 val randomIntent = Intent(context, barcode_scan::class.java)
@@ -93,6 +90,7 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                     run {
                         randomIntent.putExtra("FileName", sessionCard!!.title)
                         randomIntent.putExtra("Path", path)
+                        randomIntent.putExtra("LiveUpload", "true")
                         context.startActivity(randomIntent)
                     }
                 }
@@ -107,29 +105,41 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                 dialog.show()
             }
 
-            //Turn Live upload on or off
-
+            // Cloud / Batch Upload Button
             itemView.imageButton5.setOnClickListener {
+
                 val intent = Intent(context, MainActivity::class.java)
+
                 if (path == "sent"){
+
+                    // For sent folder, move the files back to unsent
                     var filePath = Paths.get(file.getAbsolutePath())
                     var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/unsent/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir.getAbsolutePath())
                     move(filePath, newFilePath)
-                } else {
-                    var filePath = Paths.get(file.getAbsolutePath())
-                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/sent/" + sessionCard!!.title)
-                    var newFilePath = Paths.get(dir.getAbsolutePath())
-                    move(filePath, newFilePath)
+
+                    // Disable the button
+                    itemView.imageButton5.isActivated = false
+
+                    // Update the progress text
+                    itemView.Session_Number_Uploaded.text = "Moved files to Unsent folder"
                 }
 
+                else {   
 
-                context.startActivity(intent)
+                    // For unsent folder, initiate the batch upload, files will move upon success
+                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/unsent/" + sessionCard!!.title)
+                    var b: B=B(dir)
+                    b.start()
+
+                    // Disable the button
+                    itemView.imageButton5.isActivated = false
+
+                    // Update the progress text
+                    itemView.Session_Number_Uploaded.text = "Live Upload running!"
+                }
+
             }
-
-
-
-
 
             // Delete Session
             itemView.imageButton6.setOnClickListener {
@@ -158,22 +168,80 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                         deleteRecursive(stageFile)
                         context.startActivity(intent)
                     }}
-                    // Display a neutral button on alert dialog
-                    builder.setNeutralButton("Cancel") { _, _ -> }
 
-                    // Finally, make the alert dialog using builder
-                    val dialog: AlertDialog = builder.create()
+                // Display a neutral button on alert dialog
+                builder.setNeutralButton("Cancel") { _, _ -> }
 
-                    // Display the alert dialog on app interface
-                    dialog.show()
+                // Finally, make the alert dialog using builder
+                val dialog: AlertDialog = builder.create()
 
-                }
+                // Display the alert dialog on app interface
+                dialog.show()
             }
+        }
+    }
+}
 
+// Batch Upload Function threaded to background
+class B(val dir: File) : Thread()
+{
+    // Handle Batch Upload Button Click
+    var filesForUpload: Array<File>? = null
+    val remoteDirectoryForUploads = "OSU_ID_APP/"
+
+    // STODO: Get these Environment Variables from App Settings
+    private val ENVIRONMENT_VARIABLE_HOST = "KSFTP_HOST"
+    private val ENVIRONMENT_VARIABLE_PORT = "KSFTP_PORT"
+    private val ENVIRONMENT_VARIABLE_USERNAME = "KSFTP_USERNAME"
+    private val ENVIRONMENT_VARIABLE_PASSWORD = "KSFTP_PASSWORD"
+
+    // Initialize SFTP Client
+    private var sftpClient: SftpClient? = null
+    private fun createConnectionParameters(): SftpConnectionParameters {
+        return SftpConnectionParametersBuilder.newInstance().createConnectionParameters()
+            .withHostFromEnvironmentVariable(ENVIRONMENT_VARIABLE_HOST)
+            .withPortFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PORT)
+            .withUsernameFromEnvironmentVariable(ENVIRONMENT_VARIABLE_USERNAME)
+            .withPasswordFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PASSWORD)
+            .create()
+    }
+
+    override fun run() {
+
+        // Initiate Connection
+        sftpClient = SftpClient.create(createConnectionParameters())
+
+        // Get Files for upload
+        filesForUpload = dir.listFiles()
+
+        val remoteFilePaths = ArrayList<String>()
+        val filePairs = ArrayList<FilePair>()
+        for (uploadFile in filesForUpload!!) {
+            val remoteFilePath = remoteDirectoryForUploads + File.separator + uploadFile.name
+            filePairs.add(FilePair(uploadFile.path, remoteFilePath))
+            remoteFilePaths.add(remoteFilePath)
         }
 
+        // Upload to SFTP
+        if (sftpClient!!.upload(filePairs, 120*filesForUpload!!.size)) {
 
+            // Successful upload
+            println("Batch Upload Successful")
 
+            // Move files to sent folder
+            for (uploadFile in filesForUpload!!) {
+                var filePath = Paths.get(uploadFile.getAbsolutePath())
+                var filePathStr = uploadFile.absolutePath
+                var newFilePathStr = filePathStr.replaceFirst("unsent", "sent", true)
+                var newFilePathDir = File(newFilePathStr)
+                var newFilePath = Paths.get(newFilePathDir.getAbsolutePath())
+                move(filePath, newFilePath)
+                println("Moved file to sent folder")
+            }
+        }
 
-
+        else {  // Failed Upload
+            println("Batch Upload Failed")
+        }
+    }
 }
