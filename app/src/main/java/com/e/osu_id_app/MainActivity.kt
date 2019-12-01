@@ -144,8 +144,7 @@ class MainActivity : AppCompatActivity() {
                     fileString = "notLive/$input1/unsent"
                     fileString2 = "notLive/$input1/sent"
                 }
-                println(fileString)
-                println(fileString2)
+
 
                 // Create Sent and Unsent Folders
                 var createSentDir = File(externalMediaDirs.first(), fileString2)
