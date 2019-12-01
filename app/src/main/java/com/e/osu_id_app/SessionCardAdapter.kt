@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.row.view.*
 import java.io.File
 import android.graphics.BitmapFactory
+import android.os.SystemClock.sleep
 import java.nio.file.Files.move
 import java.nio.file.Paths
 
@@ -41,14 +42,14 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
             val file = File(sessionCard!!.path)
             val path = file.getParentFile().getName()
 
-            if (path == "sent")
+            if (path == "live")
             {
                 itemView.imageButton5.setImageResource(R.drawable.upload1)
             }
 
             itemView.SessionTitle.text = sessionCard!!.title
             itemView.Session_Date.text = sessionCard!!.dateStr
-            itemView.Session_Number_Uploaded.text = sessionCard!!.progressStr + " - " + path
+            itemView.Session_Number_Uploaded.text = sessionCard!!.progressStr
 
             if (sessionCard!!.photo1 != "Null") {
                 val bmp =
@@ -89,8 +90,13 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                 builder.setPositiveButton("Yes") { dialog, which ->
                     run {
                         randomIntent.putExtra("FileName", sessionCard!!.title)
-                        randomIntent.putExtra("Path", path)
-                        randomIntent.putExtra("LiveUpload", "true")
+
+                        println(path)
+                        if (path == "live") {
+                            randomIntent.putExtra("LiveUpload", "true")
+                        } else {
+                            randomIntent.putExtra("LiveUpload", "false")
+                        }
                         context.startActivity(randomIntent)
                     }
                 }
@@ -110,34 +116,40 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
                 val intent = Intent(context, MainActivity::class.java)
 
-                if (path == "sent"){
+                if (path == "live"){
+                    // refresh page
+                    itemView.Session_Number_Uploaded.text = "Going Offline"
 
-                    // For sent folder, move the files back to unsent
+                    // For sent folder, move the files back to notLive
                     var filePath = Paths.get(file.getAbsolutePath())
-                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/unsent/" + sessionCard!!.title)
+                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/notLive/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir.getAbsolutePath())
                     move(filePath, newFilePath)
 
-                    // Disable the button
-                    itemView.imageButton5.isActivated = false
-
-                    // Update the progress text
-                    itemView.Session_Number_Uploaded.text = "Moved files to Unsent folder"
-                }
-
-                else {   
-
-                    // For unsent folder, initiate the batch upload, files will move upon success
-                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/unsent/" + sessionCard!!.title)
-                    var b: B=B(dir)
-                    b.start()
-
-                    // Disable the button
-                    itemView.imageButton5.isActivated = false
+                } else {
 
                     // Update the progress text
                     itemView.Session_Number_Uploaded.text = "Live Upload running!"
+
+                    // Disable the button
+                    itemView.imageButton5.isActivated = false
+
+
+
+                    var filePath = Paths.get(file.getAbsolutePath())
+                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title)
+                    var newFilePath = Paths.get(dir.getAbsolutePath())
+                    move(filePath, newFilePath)
+                    // For unsent folder, initiate the batch upload, files will move upon success
+                    dir = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title + "/unsent")
+                    var b: B=B(dir)
+
+
+                    b.start()
+                    b.join()
                 }
+
+                context.startActivity(intent)
 
             }
 
@@ -163,9 +175,7 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
                         val intent = Intent(context, MainActivity::class.java)
                         val file = File(sessionCard!!.path)
-                        val stageFile = File("/storage/emulated/0/Android/media/com.osu_id_app/stage/", sessionCard!!.title)
                         deleteRecursive(file)
-                        deleteRecursive(stageFile)
                         context.startActivity(intent)
                     }}
 

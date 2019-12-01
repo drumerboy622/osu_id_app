@@ -86,7 +86,6 @@ class photo_session : AppCompatActivity() {
 
         val barcode: String = intent.getStringExtra("student_barcode") as String
         val fileName: String = intent.getStringExtra("FileName") as String
-        val path: String = intent.getStringExtra("Path") as String
         val liveUpload: String = intent.getStringExtra("LiveUpload") as String
 
         // Create configuration object for the viewfinder use case
@@ -124,7 +123,12 @@ class photo_session : AppCompatActivity() {
         imageCapture = ImageCapture(imageCaptureConfig)
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
 
-            val file = File(externalMediaDirs.first(), path + "/" + fileName + "/" + barcode + ".jpg")
+            var live = "live"
+            if (liveUpload == "false")
+            {
+                live = "notLive"
+            }
+            val file = File(externalMediaDirs.first(), live + "/" + fileName + "/unsent/" + barcode + ".jpg")
 
             imageCapture!!.takePicture(file, executor,
                 object : ImageCapture.OnImageSavedListener {
@@ -134,7 +138,7 @@ class photo_session : AppCompatActivity() {
                         exc: Throwable?
                     ) {
                         val msg = "Photo capture failed: $message"
-                        Log.e("CameraXApp", msg, exc)
+                        Log.e("Camera Failed", msg, exc)
                         viewFinder.post {
                             makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                         }
@@ -151,7 +155,6 @@ class photo_session : AppCompatActivity() {
                         println("444444444444444")
 
                         randomIntent.putExtra("student_barcode", barcode)
-                        randomIntent.putExtra("Path", path)
                         randomIntent.putExtra("LiveUpload", liveUpload)
 
 

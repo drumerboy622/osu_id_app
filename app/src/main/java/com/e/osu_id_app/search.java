@@ -14,7 +14,7 @@ public class search {
                     (pathA, basicFileAttributes) -> {
                         File file = pathA.toFile();
                         return !file.isDirectory() &&
-                                file.getName().contains(barcode);
+                                file.getName().contains(barcode + ".jpg");
                     });
 
             filePath = stream.findFirst().orElse(null);

@@ -53,10 +53,12 @@ class MainActivity : AppCompatActivity() {
         // using extension function walkBottomUp - gets the most recent folders first
         File("/storage/emulated/0/Android/media/com.osu_id_app/").walkBottomUp().forEach {
 
-            // Iterate through each "unsent" and "sent" directory
+            // Iterate through each "live" and "notLive" directory
             val path = Paths.get(it.absolutePath)
-            if(Files.isDirectory(path) && it.name != "com.osu_id_app"  && it.parentFile.name != "com.osu_id_app" && it.parentFile.name != "stage"){
+            if(Files.isDirectory(path) && it.name != "com.osu_id_app"  && it.parentFile.name != "com.osu_id_app" && it.name != "unsent" && it.name != "sent" ){
 
+                println(it.absolutePath)
+                var unsent = 0
                 filesTotalCnt = 0
                 var path1 = "Null"
                 var path2 = "Null"
@@ -77,13 +79,21 @@ class MainActivity : AppCompatActivity() {
                         {
                             path3 = it1.absolutePath
                         }
+                        if (it1.getParentFile().getName() == "unsent") {
+                            unsent++
+                        }
                         filesTotalCnt++
                     }
                 }
 
+                var uploaded  = filesTotalCnt - unsent
+                var live = it.getParentFile().getName()
+                if (live == "notLive")
+                    live = "not live"
+
                 // Create a sessionCard for each directory and add it to the sessions list
                 sessionsLst.add(SessionCard(path1, path2, path3, it.absolutePath, it.name, it.lastModified(), sdf.format(it.lastModified()),
-                    "$filesTotalCnt Files"
+                    "$uploaded of $filesTotalCnt Files Sent - $live"
                 ) )
             }
         }
@@ -125,22 +135,25 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Name Already In Use", Toast.LENGTH_SHORT).show()
 
             } else {
-                var fileString = "unsent/$input1"
+                var fileString = "live/$input1/unsent"
+                var fileString2 = "live/$input1/sent"
                 var liveUpload = "true"
-                var path = "unsent"
 
                 if(mDialogView.checkBox.isChecked) {
                     liveUpload = "false"
+                    fileString = "notLive/$input1/unsent"
+                    fileString2 = "notLive/$input1/sent"
                 }
+                println(fileString)
+                println(fileString2)
 
                 // Create Sent and Unsent Folders
-                var createSentDir = File(externalMediaDirs.first(), "sent/$input1")
+                var createSentDir = File(externalMediaDirs.first(), fileString2)
                 createSentDir?.mkdirs()
                 var filename = File(externalMediaDirs.first(), fileString)
                 filename?.mkdirs()
 
                 randomIntent.putExtra("FileName", input1)
-                randomIntent.putExtra("Path", path)
                 randomIntent.putExtra("LiveUpload", liveUpload)
                 startActivity(randomIntent)
             }

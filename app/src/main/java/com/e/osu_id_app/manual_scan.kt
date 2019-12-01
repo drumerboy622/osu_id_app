@@ -41,7 +41,6 @@ class manual_scan : AppCompatActivity() {
 
         val input = findViewById<EditText>(R.id.editText5)
         val barcode = input.getText().toString()
-        val path: String = intent.getStringExtra("Path") as String
         val fileName: String = intent.getStringExtra("FileName") as String
         val liveUpload: String = intent.getStringExtra("LiveUpload") as String
 
@@ -69,7 +68,6 @@ class manual_scan : AppCompatActivity() {
             val randomIntent = Intent(this@manual_scan, Review::class.java)
             val unreversed = searchIt.myMethod2(filePath)
             randomIntent.putExtra("student_barcode", barcode)
-            randomIntent.putExtra("Path", path)
             randomIntent.putExtra("FileName", fileName)
             randomIntent.putExtra("SavedFileName", unreversed)
             randomIntent.putExtra("FilePath", filePath.toString())
@@ -78,7 +76,6 @@ class manual_scan : AppCompatActivity() {
         } else {
             val randomIntent = Intent(this@manual_scan, photo_session::class.java)
             randomIntent.putExtra("student_barcode", barcode)
-            randomIntent.putExtra("Path", path)
             randomIntent.putExtra("FileName", fileName)
             randomIntent.putExtra("LiveUpload", liveUpload)
             startActivity(randomIntent)

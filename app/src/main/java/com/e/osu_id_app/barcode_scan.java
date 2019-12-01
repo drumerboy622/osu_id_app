@@ -89,7 +89,6 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
 
                 Bundle get_intent = getIntent().getExtras();
                 String file_name = get_intent.getString("FileName");
-                String path = get_intent.getString("Path");
                 String liveUpload = get_intent.getString("LiveUpload");
                 boolean exists = true;
 
@@ -115,7 +114,6 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                             Intent intent = new Intent(barcode_scan.this, Review.class);
                             intent.putExtra("FileName", file_name);
                             intent.putExtra("SavedFileName", unreversed);
-                            intent.putExtra("Path", path);
                             intent.putExtra("student_barcode", barcode.displayValue);
                             intent.putExtra("FilePath", filePath.toString());
                             intent.putExtra("LiveUpload", liveUpload);
@@ -123,7 +121,6 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                         } else {
                             Intent intent = new Intent(barcode_scan.this, photo_session.class);
                             intent.putExtra("FileName", file_name);
-                            intent.putExtra("Path", path);
                             intent.putExtra("student_barcode", barcode.displayValue);
                             intent.putExtra("LiveUpload", liveUpload);
                             startActivity(intent);

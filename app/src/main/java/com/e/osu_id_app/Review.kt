@@ -38,7 +38,6 @@ class Review : AppCompatActivity() {
         }
 
         val filePath: String = intent.getStringExtra("FilePath") as String
-        val path: String = intent.getStringExtra("Path") as String
 
         println(filePath)
 
@@ -77,7 +76,6 @@ class Review : AppCompatActivity() {
             }
 
             intent.putExtra("FileName", fileName)
-            intent.putExtra("Path", path)
             intent.putExtra("LiveUpload", liveUpload)
 
             startActivity(intent)
@@ -100,7 +98,6 @@ class Review : AppCompatActivity() {
 
                 intent.putExtra("student_barcode", barcode)
                 intent.putExtra("FileName", fileName)
-                intent.putExtra("Path", path)
                 intent.putExtra("LiveUpload", liveUpload)
                 startActivity(intent)
             }}
@@ -133,7 +130,6 @@ class Review : AppCompatActivity() {
                 file.delete()
 
                 intent.putExtra("FileName", fileName)
-                intent.putExtra("Path", path)
                 intent.putExtra("LiveUpload", liveUpload)
                 startActivity(intent)
             }}
