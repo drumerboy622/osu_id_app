@@ -69,32 +69,24 @@
         app:layout_constraintStart_toStartOf="@id/newSessionContainer"
         app:layout_constraintTop_toTopOf="@id/newSessionContainer"/>
 
-    <TextView
-        android:id="@+id/cardContainer"
-        android:layout_width="0dp"
-        android:layout_height="700dp"
-        android:layout_marginTop="0dp"
-        android:background="#fff"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/newSessionContainer">
-    </TextView>
-
     <androidx.cardview.widget.CardView
         android:id="@+id/session_card_template"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/cardContainer"
-        app:layout_constraintTop_toTopOf="@id/cardContainer"/>
-    />
+        app:layout_constraintStart_toStartOf="@id/start_new_session"
+        app:layout_constraintTop_toBottomOf="@+id/newSessionContainer" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="1000dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="@id/cardContainer"
+        android:layout_height="680sp"
+        app:fastScrollEnabled="true"
+        app:fastScrollHorizontalThumbDrawable="@drawable/thumb_drawable"
+        app:fastScrollHorizontalTrackDrawable="@drawable/line_drawable"
+        app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
+        app:fastScrollVerticalTrackDrawable="@drawable/line_drawable"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/session_card_template" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
