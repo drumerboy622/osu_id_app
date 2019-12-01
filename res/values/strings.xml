@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">osu_id_app</string>
+    <string name="toast_button">Toast</string>
+    <string name="count_button">Count</string>
+    <string name="random_button">Random</string>
+    <string name="random_number">Here is a random number between 0 and %1d</string>
+    <string name="random_heading">random_heading</string>
+    <string name="header">ID Center</string>
+    <string name="remote_photo_session">Remote Photo Session</string>
+    <string name="new_session">New Session</string>
+    <string name="session_name_header">Session Name</string>
+    <string name="date_header">Date Last Used</string>
+    <string name="progress_header">Upload Progress</string>
+    <string name="file_name">morning</string>
+    <string name="studentid">StudentID</string>
+    <string name="enter_manually_button">Enter Manually</string>
+    <string name="get_barcode_header">Read Barcode</string>
+    <string name="go_back">Go Back</string>
+    <string name="scan_button">Scan</string>
+</resources>
