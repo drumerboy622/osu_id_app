@@ -11,17 +11,22 @@ import kotlinx.android.synthetic.main.activity_file.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import java.io.File
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_setting.*
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
+import kotlinx.android.synthetic.main.activity_setting.view.*
 
 class MainActivity : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         
         // Initializes the app and loads the main framework
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 
         // Initializes recycler view for saved sessions
         loadRecyclerView()
@@ -103,6 +108,46 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun startSettings(view: View) {
+
+        val sharedPreference:SharedPreference=SharedPreference(this)
+
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.activity_setting, null)
+        val builder = AlertDialog.Builder(this@MainActivity)
+
+        builder.setTitle("Settings - Not Working Yet")
+        builder.setView(mDialogView)
+
+        builder.setPositiveButton("Update") { dialog, which ->
+            run {
+                val host = mDialogView.host.text.toString()
+                val port = Integer.parseInt(mDialogView.port.text.toString())
+                val username = mDialogView.username.text.toString()
+                val password = mDialogView.password.text.toString()
+                sharedPreference.save("host",host)
+                sharedPreference.save("port",port)
+                sharedPreference.save("username",username)
+                sharedPreference.save("password",password)
+
+                println(sharedPreference.getValueString("host"))
+                println(sharedPreference.getValueInt("port"))
+                println(sharedPreference.getValueString("username"))
+                println(sharedPreference.getValueString("password"))
+
+
+            }
+        }
+
+        // Display a neutral button on alert dialog
+        builder.setNeutralButton("Cancel"){_,_ -> }
+
+        // Finally, make the alert dialog using builder
+        val dialog: AlertDialog = builder.create()
+
+        // Display the alert dialog on app interface
+        dialog.show()
+    }
+
 
     fun startSession(view: View) {
 
@@ -116,9 +161,9 @@ class MainActivity : AppCompatActivity() {
         builder.setPositiveButton("Start new Session"){dialog, which -> run {
 
             val searchIt = search()
-            var input1 = mDialogView.editText.text.toString()
+            val input1 = mDialogView.editText.text.toString()
             var exists = true
-            var dir = File(externalMediaDirs.first().toString())
+            val dir = File(externalMediaDirs.first().toString())
             var filePath = Paths.get(dir.getAbsolutePath())
 
             filePath = searchIt.myMethod3(filePath, input1)
@@ -168,6 +213,7 @@ class MainActivity : AppCompatActivity() {
         // Display the alert dialog on app interface
         dialog.show()
     }
+
 }
 
 

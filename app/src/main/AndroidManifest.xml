@@ -19,6 +19,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".manual_scan" />
+        <activity android:name=".SharedPreferences" />
         <activity android:name=".Review" />
         <activity android:name=".photo_session" />
         <activity android:name=".Camera" />

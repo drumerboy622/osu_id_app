@@ -1,5 +1,6 @@
 package com.e.osu_id_app
 
+import android.content.Context
 import org.apache.commons.lang3.StringUtils
 import java.util.*
 
@@ -28,6 +29,23 @@ class SftpConnectionParametersBuilder {
         //if (StringUtils.isEmpty(host)) {
         //    throw IllegalArgumentException("host cannot be blank")
         //}
+
+        //val sharedPreference:SharedPreference=SharedPreference(this)
+
+
+        //host = sharedPreference.getValueString("host")
+        //port = sharedPreference.getValueInt("port")
+        //username = sharedPreference.getValueString("username")
+        //password = sharedPreference.getValueString("password")?.toByteArray()
+
+       // println("333333333333333333")
+        //println(sharedPreference.getValueString("host"))
+       // println(sharedPreference.getValueInt("port"))
+       // println(sharedPreference.getValueString("username"))
+       // println(sharedPreference.getValueString("password"))
+       // println("333333333333333333")
+
+
 
         return SftpConnectionParameters("54.208.173.146", 22, "defaultuser", "CWT34GGLKZJUFJE6CYF5P3IDXU".toByteArray())
     }

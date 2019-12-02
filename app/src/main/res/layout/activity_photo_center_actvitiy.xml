@@ -15,8 +15,10 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="32dp"
         android:layout_marginEnd="16dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:src="@drawable/ic_flash"
-        app:backgroundTint="@android:color/white"
+        app:backgroundTint="@color/colorPrimaryDark"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/view_finder"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,6 +29,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#333333"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
         android:text="Take Photo"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -36,16 +40,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/capture_button"
         android:layout_width="96dp"
-        android:layout_height="89dp"
+        android:layout_height="0dp"
         android:layout_margin="18dp"
         android:background="#333333"
+        android:paddingTop="5dp"
+        app:backgroundTint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/circletakephoto" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView4"
@@ -73,23 +78,13 @@
         android:id="@+id/view_finder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/capture_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/view_finder"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/view_finder"
-        app:srcCompat="@drawable/overlay" />
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

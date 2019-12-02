@@ -17,4 +17,11 @@
     <string name="get_barcode_header">Read Barcode</string>
     <string name="go_back">Go Back</string>
     <string name="scan_button">Scan</string>
+    <string name="host">54.208.173.146</string>
+    <string name="port">22</string>
+    <string name="username">defaultuser</string>
+    <string name="password">CWT34GGLKZJUFJE6CYF5P3IDXU</string>
+
+
+
 </resources>
