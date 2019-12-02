@@ -108,7 +108,8 @@ public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
                     }
                         if (!exists) {
 
-                            String unreversed = searchIt.myMethod2(filePath);
+                            File temp = new File(filePath.toString());
+                            String unreversed = temp.getParentFile().getParentFile().getName();
 
                             //Send Intent to Review activity
                             Intent intent = new Intent(barcode_scan.this, Review.class);

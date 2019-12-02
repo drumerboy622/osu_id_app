@@ -66,7 +66,8 @@ class manual_scan : AppCompatActivity() {
 
         if(!exists){
             val randomIntent = Intent(this@manual_scan, Review::class.java)
-            val unreversed = searchIt.myMethod2(filePath)
+            val temp = File(filePath.toString())
+            val unreversed = temp.getParentFile().getParentFile().getName()
             randomIntent.putExtra("student_barcode", barcode)
             randomIntent.putExtra("FileName", fileName)
             randomIntent.putExtra("SavedFileName", unreversed)
