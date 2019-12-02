@@ -44,6 +44,12 @@ class MainActivity : AppCompatActivity() {
         val savedSessions = ArrayList<SessionCard>()
         getSavedSessions(savedSessions)
 
+        if(savedSessions.count() == 0) {
+
+            val showIt = findViewById<TextView>(R.id.textView19)
+            showIt.setVisibility(View.VISIBLE)
+        }
+
         // Bind the recyclerView adapter to the session list
         var adapter = SessionCardAdapter(this, savedSessions)
         recyclerView.adapter = adapter
