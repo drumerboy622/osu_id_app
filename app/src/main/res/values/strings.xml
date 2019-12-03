@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">osu_id_app</string>
+    <string name="app_name">R-Sessions</string>
     <string name="toast_button">Toast</string>
     <string name="count_button">Count</string>
     <string name="random_button">Random</string>
