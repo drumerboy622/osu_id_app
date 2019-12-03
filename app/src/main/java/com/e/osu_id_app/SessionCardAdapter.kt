@@ -14,6 +14,7 @@ import java.nio.file.Files
 import java.nio.file.Files.move
 import java.nio.file.StandardCopyOption.*
 import java.nio.file.Paths
+import kotlinx.coroutines.*
 
 class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCard>) : RecyclerView.Adapter<SessionCardAdapter.MyViewHolder>(){
 
@@ -116,46 +117,42 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
             itemView.imageButton5.setOnClickListener {
                 println("made it inside button")
                 if (path == "live"){
-                    println("1")
                     // refresh page
                     itemView.Session_Number_Uploaded.text = "Going Offline"
-                    println("2")
                     // For sent folder, move the files back to notLive
                     var filePath = Paths.get(file.getAbsolutePath())
                     var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/notLive/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir.getAbsolutePath())
                     move(filePath, newFilePath)
 
-                } else {
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)
 
-                    // Update the progress text
-                    itemView.Session_Number_Uploaded.text = "Live Upload running!"
+                } else {
+                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title + "/unsent")
+                    val b: B=B(dir)
+                    val job = GlobalScope.launch {
+                        delay(10L)
+                        b.start()
+                        b.join()
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
+
+                    }
 
                     // Disable the button
                     itemView.imageButton5.isActivated = false
-
-
-
+                    itemView.imageButton6.isActivated = false
+                    itemView.Session_Number_Uploaded.text = "Please Wait - Uploading"
+                    // Update the progress text
                     var filePath = Paths.get(file.getAbsolutePath())
-
-                    var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title)
-
+                    dir = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir.getAbsolutePath())
-
                     move(filePath, newFilePath, REPLACE_EXISTING)
 
-
-                    // For unsent folder, initiate the batch upload, files will move upon success
-                    dir = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title + "/unsent")
-                    println("5")
-                    var b: B=B(dir)
-
-
-                    b.start()
-                    b.join()
                 }
-                val intent = Intent(context, MainActivity::class.java)
-                context.startActivity(intent)
+
+
 
             }
 
@@ -198,9 +195,11 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
     }
 }
 
+
 // Batch Upload Function threaded to background
 class B(val dir: File) : Thread()
 {
+
     // Handle Batch Upload Button Click
     var filesForUpload: Array<File>? = null
     val remoteDirectoryForUploads = "OSU_ID_APP/"
@@ -223,7 +222,6 @@ class B(val dir: File) : Thread()
     }
 
     override fun run() {
-
         // Initiate Connection
         sftpClient = SftpClient.create(createConnectionParameters())
 
