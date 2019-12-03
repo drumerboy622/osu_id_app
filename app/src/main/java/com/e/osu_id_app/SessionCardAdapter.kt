@@ -10,13 +10,24 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.row.view.*
 import java.io.File
 import android.graphics.BitmapFactory
+import kotlinx.android.synthetic.main.activity_setting.view.*
 import java.nio.file.Files
-import java.nio.file.Files.move
+
 import java.nio.file.StandardCopyOption.*
 import java.nio.file.Paths
 import kotlinx.coroutines.*
+import java.nio.file.Files.move
+
+
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+
 
 class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCard>) : RecyclerView.Adapter<SessionCardAdapter.MyViewHolder>(){
+
+    private var sftpClient: SftpClient? = null
+    var filesForUpload: Array<File>? = null
+    val remoteDirectoryForUploads = "OSU_ID_APP/"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 
@@ -115,39 +126,84 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
             // Cloud / Batch Upload Button
             itemView.imageButton5.setOnClickListener {
-                println("made it inside button")
+
                 if (path == "live"){
+
+                    val intent = Intent(context, MainActivity::class.java)
                     // refresh page
                     itemView.Session_Number_Uploaded.text = "Going Offline"
-                    // For sent folder, move the files back to notLive
+                    // For sent folder, move the files to notLive
+
                     var filePath = Paths.get(file.getAbsolutePath())
                     var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/notLive/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir.getAbsolutePath())
-                    move(filePath, newFilePath)
 
-                    val intent = Intent(context, MainActivity::class.java)
+
+                    move(filePath, newFilePath, REPLACE_EXISTING)
+
                     context.startActivity(intent)
 
                 } else {
                     var dir = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title + "/unsent")
-                    val b: B=B(dir)
-                    val job = GlobalScope.launch {
+
+                    GlobalScope.launch {
                         delay(10L)
-                        b.start()
-                        b.join()
+
+                        val sharedPreference = SharedPreference(context)
+
+                        val host = sharedPreference.getValueString("host").toString()
+                        val port = sharedPreference.getValueInt("port")
+                        val username = sharedPreference.getValueString("username").toString()
+                        val password = sharedPreference.getValueString("password").toString()
+
+
+                        // Initiate Connection
+                        sftpClient = SftpClient.create(SftpConnectionParameters(host, port, username, password.toByteArray()))
+
+                        // Get Files for upload
+                        filesForUpload = dir.listFiles()
+
+                        val remoteFilePaths = ArrayList<String>()
+                        val filePairs = ArrayList<FilePair>()
+                        for (uploadFile in filesForUpload!!) {
+                            val remoteFilePath = remoteDirectoryForUploads + File.separator + uploadFile.name
+                            filePairs.add(FilePair(uploadFile.path, remoteFilePath))
+                            remoteFilePaths.add(remoteFilePath)
+                        }
+
+                        // Upload to SFTP
+                        if (sftpClient!!.upload(filePairs, 120*filesForUpload!!.size)) {
+
+                            // Successful upload
+                            println("Batch Upload Successful")
+
+                            // Move files to sent folder
+                            for (uploadFile in filesForUpload!!) {
+                                var filePath = Paths.get(uploadFile.getAbsolutePath())
+                                var filePathStr = uploadFile.absolutePath
+                                var newFilePathStr = filePathStr.replaceFirst("unsent", "sent", true)
+                                var newFilePathDir = File(newFilePathStr)
+                                var newFilePath = Paths.get(newFilePathDir.getAbsolutePath())
+                                move(filePath, newFilePath)
+                                println("Moved file to sent folder")
+                            }
+                        } else {  // Failed Upload
+                            // println("Batch Upload Failed")
+                            }
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
 
                     }
 
                     // Disable the button
-                    itemView.imageButton5.isActivated = false
-                    itemView.imageButton6.isActivated = false
+                    itemView.imageButton5.setVisibility(View.INVISIBLE)
+                    itemView.imageButton6.setVisibility(View.INVISIBLE)
+
                     itemView.Session_Number_Uploaded.text = "Please Wait - Uploading"
                     // Update the progress text
                     var filePath = Paths.get(file.getAbsolutePath())
-                    dir = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title)
-                    var newFilePath = Paths.get(dir.getAbsolutePath())
+                    var dir1 = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title)
+                    var newFilePath = Paths.get(dir1.getAbsolutePath())
                     move(filePath, newFilePath, REPLACE_EXISTING)
 
                 }
@@ -191,71 +247,6 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                 // Display the alert dialog on app interface
                 dialog.show()
             }
-        }
-    }
-}
-
-
-// Batch Upload Function threaded to background
-class B(val dir: File) : Thread()
-{
-
-    // Handle Batch Upload Button Click
-    var filesForUpload: Array<File>? = null
-    val remoteDirectoryForUploads = "OSU_ID_APP/"
-
-    // STODO: Get these Environment Variables from App Settings
-    private val ENVIRONMENT_VARIABLE_HOST = "KSFTP_HOST"
-    private val ENVIRONMENT_VARIABLE_PORT = "KSFTP_PORT"
-    private val ENVIRONMENT_VARIABLE_USERNAME = "KSFTP_USERNAME"
-    private val ENVIRONMENT_VARIABLE_PASSWORD = "KSFTP_PASSWORD"
-
-    // Initialize SFTP Client
-    private var sftpClient: SftpClient? = null
-    private fun createConnectionParameters(): SftpConnectionParameters {
-        return SftpConnectionParametersBuilder.newInstance().createConnectionParameters()
-            .withHostFromEnvironmentVariable(ENVIRONMENT_VARIABLE_HOST)
-            .withPortFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PORT)
-            .withUsernameFromEnvironmentVariable(ENVIRONMENT_VARIABLE_USERNAME)
-            .withPasswordFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PASSWORD)
-            .create()
-    }
-
-    override fun run() {
-        // Initiate Connection
-        sftpClient = SftpClient.create(createConnectionParameters())
-
-        // Get Files for upload
-        filesForUpload = dir.listFiles()
-
-        val remoteFilePaths = ArrayList<String>()
-        val filePairs = ArrayList<FilePair>()
-        for (uploadFile in filesForUpload!!) {
-            val remoteFilePath = remoteDirectoryForUploads + File.separator + uploadFile.name
-            filePairs.add(FilePair(uploadFile.path, remoteFilePath))
-            remoteFilePaths.add(remoteFilePath)
-        }
-
-        // Upload to SFTP
-        if (sftpClient!!.upload(filePairs, 120*filesForUpload!!.size)) {
-
-            // Successful upload
-            println("Batch Upload Successful")
-
-            // Move files to sent folder
-            for (uploadFile in filesForUpload!!) {
-                var filePath = Paths.get(uploadFile.getAbsolutePath())
-                var filePathStr = uploadFile.absolutePath
-                var newFilePathStr = filePathStr.replaceFirst("unsent", "sent", true)
-                var newFilePathDir = File(newFilePathStr)
-                var newFilePath = Paths.get(newFilePathDir.getAbsolutePath())
-                move(filePath, newFilePath)
-                println("Moved file to sent folder")
-            }
-        }
-
-        else {  // Failed Upload
-            println("Batch Upload Failed")
         }
     }
 }

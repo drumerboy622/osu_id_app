@@ -12,11 +12,18 @@ import android.os.Build
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.nio.file.Files.move
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
 
 class Review : AppCompatActivity() {
+
+    private val remoteDirectoryForUploads = "OSU_ID_APP/"
+    private var sftpClient: SftpClient? = null
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,10 +60,6 @@ class Review : AppCompatActivity() {
         var textView = findViewById<TextView>(R.id.textView11)
         textView.text = barcode
 
-
-        var a: A=A(file)
-
-
         // View image
         val bmp =
             BitmapFactory.decodeFile(filePath)
@@ -71,8 +74,43 @@ class Review : AppCompatActivity() {
             val intent = Intent(this, barcode_scan::class.java)
             // Create connection parameters
 
-            if(liveUpload == "true") {
-                a.start()
+            if (liveUpload == "true") {
+
+                val sharedPreference = SharedPreference(this)
+
+                GlobalScope.launch {
+                    delay(10L)
+
+
+                    val host = sharedPreference.getValueString("host").toString()
+                    val port = sharedPreference.getValueInt("port")
+                    val username = sharedPreference.getValueString("username").toString()
+                    val password = sharedPreference.getValueString("password").toString()
+
+
+                    // Initiate Connection
+                    sftpClient = SftpClient.create(
+                        SftpConnectionParameters(
+                            host,
+                            port,
+                            username,
+                            password.toByteArray()
+                        )
+                    )
+
+                    // Upload to SFTP
+                    if (sftpClient!!.upload(file.absolutePath, remoteDirectoryForUploads, 300)) {
+
+                        println("Single File Upload Successful")
+                        var filePath = Paths.get(file.getAbsolutePath())
+                        var filePathStr = file.absolutePath
+                        var newFilePathStr = filePathStr.replaceFirst("unsent", "sent", true)
+                        var newFilePathDir = File(newFilePathStr)
+                        var newFilePath = Paths.get(newFilePathDir.getAbsolutePath())
+                        move(filePath, newFilePath)
+                        println("Moved file to sent folder")
+                    }
+                }
             }
 
             intent.putExtra("FileName", fileName)
@@ -185,8 +223,7 @@ class A(val file: File) : Thread()
 
     // Remote directory for upload - a folder at the user's root level on SFTP server
     // Directory will be created if it does not exist
-    private val remoteDirectoryForUploads = "OSU_ID_APP/"
-    private var sftpClient: SftpClient? = null
+
     private fun createConnectionParameters(): SftpConnectionParameters {
         return SftpConnectionParametersBuilder.newInstance().createConnectionParameters()
             .withHostFromEnvironmentVariable(ENVIRONMENT_VARIABLE_HOST)
@@ -197,21 +234,7 @@ class A(val file: File) : Thread()
     }
 
     override fun run() {
-        // Upload file
-        sftpClient = SftpClient.create(createConnectionParameters())
 
-        // Upload to SFTP
-        if(sftpClient!!.upload(file.absolutePath, remoteDirectoryForUploads, 300)){
-
-            println("Single File Upload Successful")
-            var filePath = Paths.get(file.getAbsolutePath())
-            var filePathStr = file.absolutePath
-            var newFilePathStr = filePathStr.replaceFirst("unsent", "sent", true)
-            var newFilePathDir = File(newFilePathStr)
-            var newFilePath = Paths.get(newFilePathDir.getAbsolutePath())
-            move(filePath, newFilePath)
-            println("Moved file to sent folder")
-        }
     }
 }
 

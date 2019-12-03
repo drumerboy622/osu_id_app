@@ -47,7 +47,7 @@
         android:layout_margin="18dp"
         android:background="#333333"
         android:paddingTop="5dp"
-        app:backgroundTint="@android:color/white"
+        app:backgroundTint="#3BFFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

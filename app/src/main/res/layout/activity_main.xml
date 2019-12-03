@@ -106,7 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Get Started By Pressing the &quot;New Session&quot; Button Above"
+        android:text="Get Started By Pressing the &quot;New Session&quot; Button Above\n\nDon't forget to add Host, Port, Username, and Password information by pressing the settings button on the top right."
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="20sp"

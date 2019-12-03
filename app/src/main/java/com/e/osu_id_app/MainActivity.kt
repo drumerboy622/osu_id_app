@@ -1,6 +1,8 @@
 package com.e.osu_id_app
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,9 +18,13 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import kotlinx.android.synthetic.main.activity_setting.view.*
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         
@@ -116,12 +122,13 @@ class MainActivity : AppCompatActivity() {
 
     fun startSettings(view: View) {
 
-        val sharedPreference:SharedPreference=SharedPreference(this)
+        val sharedPreference = SharedPreference(this)
+        val connectionBuilder:SftpConnectionParametersBuilder = SftpConnectionParametersBuilder()
 
         val mDialogView = LayoutInflater.from(this).inflate(R.layout.activity_setting, null)
         val builder = AlertDialog.Builder(this@MainActivity)
 
-        builder.setTitle("Settings - Not Working Yet")
+        builder.setTitle("Settings - SFTP Information")
         builder.setView(mDialogView)
 
         builder.setPositiveButton("Update") { dialog, which ->
@@ -196,6 +203,11 @@ class MainActivity : AppCompatActivity() {
                     fileString2 = "notLive/$input1/sent"
                 }
 
+                //Create live and notLive folders
+                var liveDir = File(externalMediaDirs.first(), "live")
+                liveDir?.mkdirs()
+                var notLiveDir = File(externalMediaDirs.first(), "notLive")
+                notLiveDir?.mkdirs()
 
                 // Create Sent and Unsent Folders
                 var createSentDir = File(externalMediaDirs.first(), fileString2)
@@ -218,6 +230,31 @@ class MainActivity : AppCompatActivity() {
 
         // Display the alert dialog on app interface
         dialog.show()
+    }
+    /**
+     * Check if the app has all permissions
+     */
+    private fun hasNoPermissions(): Boolean{
+        return ContextCompat.checkSelfPermission(this,
+            Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+            Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+    }
+
+    /**
+     * Request all permissions
+     */
+    fun requestPermission(){
+        ActivityCompat.requestPermissions(this, permissions,0)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Check and request permissions
+        if (hasNoPermissions()) {
+            requestPermission()
+        }
     }
 
 }
