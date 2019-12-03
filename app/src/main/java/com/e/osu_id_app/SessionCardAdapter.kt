@@ -184,7 +184,7 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                                 var newFilePathStr = filePathStr.replaceFirst("unsent", "sent", true)
                                 var newFilePathDir = File(newFilePathStr)
                                 var newFilePath = Paths.get(newFilePathDir.getAbsolutePath())
-                                move(filePath, newFilePath)
+                                move(filePath, newFilePath, REPLACE_EXISTING)
                                 println("Moved file to sent folder")
                             }
                         } else {  // Failed Upload
