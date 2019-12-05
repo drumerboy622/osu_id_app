@@ -16,8 +16,7 @@ internal class FilesExistTask(sftpConnectionParameters: SftpConnectionParameters
     }
 
     @Throws(Exception::class)
-    private fun checkFiles(): Boolean {
-        if (filePairs.isEmpty()) {
+    private fun checkFiles(): Boolean {        if (filePairs.isEmpty()) {
             return true
         }
 

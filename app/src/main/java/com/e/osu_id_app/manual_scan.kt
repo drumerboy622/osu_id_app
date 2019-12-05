@@ -6,12 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.attribute.BasicFileAttributes
-import java.util.function.BiPredicate
-import java.util.stream.Stream
 
 class manual_scan : AppCompatActivity() {
 
@@ -46,10 +41,7 @@ class manual_scan : AppCompatActivity() {
 
         var exists = true
 
-
-
-        // try {
-        var dir = File(externalMediaDirs.first().toString())
+        val dir = File(externalMediaDirs.first().toString())
         var filePath = Paths.get(dir.getAbsolutePath())
         println(filePath)
 

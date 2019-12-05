@@ -38,22 +38,4 @@ class SharedPreference(val context: Context) {
         return sharedPref.getInt(KEY_NAME, 0)
     }
 
-    fun clearSharedPreference() {
-
-        val editor: SharedPreferences.Editor = sharedPref.edit()
-
-        //sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-
-        editor.clear()
-        editor.commit()
-    }
-
-    fun removeValue(KEY_NAME: String) {
-
-        val editor: SharedPreferences.Editor = sharedPref.edit()
-
-        editor.remove(KEY_NAME)
-        editor.commit()
-    }
-
 }

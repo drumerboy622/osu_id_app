@@ -13,14 +13,10 @@ import kotlinx.android.synthetic.main.activity_file.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import java.io.File
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_setting.*
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import kotlinx.android.synthetic.main.activity_setting.view.*
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
@@ -123,7 +119,6 @@ class MainActivity : AppCompatActivity() {
     fun startSettings(view: View) {
 
         val sharedPreference = SharedPreference(this)
-        val connectionBuilder:SftpConnectionParametersBuilder = SftpConnectionParametersBuilder()
 
         val mDialogView = LayoutInflater.from(this).inflate(R.layout.activity_setting, null)
         val builder = AlertDialog.Builder(this@MainActivity)

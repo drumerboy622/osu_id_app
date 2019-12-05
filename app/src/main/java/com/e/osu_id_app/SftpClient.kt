@@ -1,11 +1,9 @@
 package com.e.osu_id_app
-import com.e.osu_id_app.task.UploadTask
-import com.e.osu_id_app.task.FilesExistTask
-import com.e.osu_id_app.task.DeleteTask
 
+import com.e.osu_id_app.task.UploadTask
+import com.e.osu_id_app.task.DeleteTask
 import com.e.osu_id_app.exception.UploadTimeoutException
 import java.util.concurrent.*
-
 
 /**
  * The SFTP client.
@@ -23,8 +21,6 @@ class SftpClient(val sftpConnectionParameters: SftpConnectionParameters) {
         }
 
         return uploadHelper(tasks, timeoutInSeconds)
-
-        //return uploadHelper(listOf(UploadTask(sftpConnectionParameters, filePairs)), timeoutInSeconds)
     }
 
     @Throws(UploadTimeoutException::class, InterruptedException::class)
@@ -39,25 +35,6 @@ class SftpClient(val sftpConnectionParameters: SftpConnectionParameters) {
         }
 
         return uploadHelper(tasks, timeoutInSeconds)
-    }
-
-    @Throws(UploadTimeoutException::class, InterruptedException::class)
-    fun upload(filePairs: List<FilePair>, batchSize: Int, timeoutInSeconds: Int): Boolean {
-        if (filePairs.isEmpty()) {
-            return true
-        }
-
-        if (batchSize < 2) {
-            return uploadHelper(listOf(UploadTask(sftpConnectionParameters, filePairs)), timeoutInSeconds)
-        } else {
-            // Partition the files into batches and create one task for each batch
-            val tasks = mutableListOf<UploadTask>()
-            filePairs.asSequence().batch(batchSize).forEach { group ->
-                tasks.add(UploadTask(sftpConnectionParameters, group))
-            }
-
-            return uploadHelper(tasks, timeoutInSeconds)
-        }
     }
 
     @Throws(UploadTimeoutException::class, InterruptedException::class)
@@ -121,26 +98,6 @@ class SftpClient(val sftpConnectionParameters: SftpConnectionParameters) {
         System.out.println(success)
 
         return success
-    }
-
-    @Throws(Exception::class)
-    fun checkFile(remoteFilePath: String): Boolean {
-        return checkFiles(listOf(remoteFilePath))
-    }
-
-    @Throws(Exception::class)
-    fun checkFiles(remoteFilePaths: List<String>): Boolean {
-        var filePairs: MutableList<FilePair> = mutableListOf()
-        for (remoteFilePath in remoteFilePaths) {
-            filePairs.add(FilePair(remoteFilePath, remoteFilePath))
-        }
-        return FilesExistTask(sftpConnectionParameters, filePairs)
-                .call()!!
-    }
-
-    @Throws(Exception::class)
-    fun delete(remoteFilePath: String): Boolean {
-        return delete(listOf(remoteFilePath))
     }
 
     @Throws(Exception::class)

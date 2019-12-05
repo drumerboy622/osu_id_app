@@ -10,17 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.row.view.*
 import java.io.File
 import android.graphics.BitmapFactory
-import kotlinx.android.synthetic.main.activity_setting.view.*
-import java.nio.file.Files
-
 import java.nio.file.StandardCopyOption.*
 import java.nio.file.Paths
 import kotlinx.coroutines.*
 import java.nio.file.Files.move
-
-
-import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 
 
 class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCard>) : RecyclerView.Adapter<SessionCardAdapter.MyViewHolder>(){
@@ -37,7 +30,6 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
     }
 
     override fun getItemCount(): Int {
-
         // Get the number of sessionCards
         return sessioncards.size
     }
@@ -51,6 +43,7 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
+        // Build Cards For Each Session
         fun setData(sessionCard: SessionCard?, pos: Int) {
             val file = File(sessionCard!!.path)
             val path = file.getParentFile().getName()
@@ -74,7 +67,6 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
             }
 
             if (sessionCard!!.photo2 != "Null") {
-
                 val bmp1 =
                     BitmapFactory.decodeFile(sessionCard!!.photo2)
                 val rotatedBitmap1 = bmp1.rotate(90)
@@ -95,8 +87,11 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
             // Continue Session
             itemView.imageButton4.setOnClickListener {
                 val randomIntent = Intent(context, barcode_scan::class.java)
+
+
                 val builder = AlertDialog.Builder(context)
 
+                // Display information
                 builder.setTitle("Continue " + sessionCard!!.title)
                 builder.setMessage("Are you sure you would like to CONTINUE this Session?")
 
@@ -149,13 +144,12 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                     GlobalScope.launch {
                         delay(10L)
 
+                        //Get SFTP information from SharedPreferences
                         val sharedPreference = SharedPreference(context)
-
                         val host = sharedPreference.getValueString("host").toString()
                         val port = sharedPreference.getValueInt("port")
                         val username = sharedPreference.getValueString("username").toString()
                         val password = sharedPreference.getValueString("password").toString()
-
 
                         // Initiate Connection
                         sftpClient = SftpClient.create(SftpConnectionParameters(host, port, username, password.toByteArray()))
@@ -188,28 +182,27 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
                                 println("Moved file to sent folder")
                             }
                         } else {  // Failed Upload
-                            // println("Batch Upload Failed")
+                            println("Batch Upload Failed")
                             }
+
+                        //Reload Main Activity
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
-
                     }
 
-                    // Disable the button
+                    // Disable buttons that should not be diplayed
                     itemView.imageButton5.setVisibility(View.INVISIBLE)
                     itemView.imageButton6.setVisibility(View.INVISIBLE)
 
+                    // Display Text to let use know what is going on
                     itemView.Session_Number_Uploaded.text = "Please Wait - Uploading"
+
                     // Update the progress text
                     var filePath = Paths.get(file.getAbsolutePath())
                     var dir1 = File("/storage/emulated/0/Android/media/com.osu_id_app/live/" + sessionCard!!.title)
                     var newFilePath = Paths.get(dir1.getAbsolutePath())
                     move(filePath, newFilePath, REPLACE_EXISTING)
-
                 }
-
-
-
             }
 
             // Delete Session
@@ -217,6 +210,7 @@ class SessionCardAdapter(val context: Context, val sessioncards: List<SessionCar
 
                 val builder = AlertDialog.Builder(context)
 
+                // Display information
                 builder.setTitle("Delete " + sessionCard!!.title)
                 builder.setMessage("Are you sure you would like to DELETE this Session?")
 

@@ -212,31 +212,5 @@ fun Bitmap.rotate(degree:Int):Bitmap{
     )
 }
 
-// Photo Upload function is threaded to background
-class A(val file: File) : Thread()
-{
-    // These environment variables must be defined on your machine
-    private val ENVIRONMENT_VARIABLE_HOST = "KSFTP_HOST"
-    private val ENVIRONMENT_VARIABLE_PORT = "KSFTP_PORT"
-    private val ENVIRONMENT_VARIABLE_USERNAME = "KSFTP_USERNAME"
-    private val ENVIRONMENT_VARIABLE_PASSWORD = "KSFTP_PASSWORD"
-
-    // Remote directory for upload - a folder at the user's root level on SFTP server
-    // Directory will be created if it does not exist
-
-    private fun createConnectionParameters(): SftpConnectionParameters {
-        return SftpConnectionParametersBuilder.newInstance().createConnectionParameters()
-            .withHostFromEnvironmentVariable(ENVIRONMENT_VARIABLE_HOST)
-            .withPortFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PORT)
-            .withUsernameFromEnvironmentVariable(ENVIRONMENT_VARIABLE_USERNAME)
-            .withPasswordFromEnvironmentVariable(ENVIRONMENT_VARIABLE_PASSWORD)
-            .create()
-    }
-
-    override fun run() {
-
-    }
-}
-
 
 

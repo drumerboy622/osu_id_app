@@ -1,12 +1,10 @@
 package com.e.osu_id_app;
 
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageButton;
@@ -14,20 +12,12 @@ import android.widget.TextView;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeCapture;
 import com.google.android.gms.samples.vision.barcodereader.BarcodeGraphic;
 import com.google.android.gms.vision.barcode.Barcode;
-
-import org.apache.logging.log4j.core.util.IOUtils;
-
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.EventListener;
 import java.util.List;
-import java.util.stream.Stream;
-
 import xyz.belvi.mobilevisionbarcodescanner.BarcodeRetriever;
+
 
 public class barcode_scan extends AppCompatActivity implements BarcodeRetriever{
 

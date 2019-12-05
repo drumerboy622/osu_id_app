@@ -25,19 +25,6 @@ public class search {
         }
     }
 
-
-
-    public String myMethod2(Path filePath) {
-        //Get the file_name
-        String reversed = new StringBuilder(filePath.toString()).reverse().toString();
-        int start = reversed.indexOf('/');
-        int end = reversed.indexOf('/', reversed.indexOf('/') + 1);
-        String shortened = reversed.substring(start + 1, end);
-        String unreversed = new StringBuilder(shortened).reverse().toString();
-
-        return unreversed;
-    }
-
     public Path myMethod3(Path filePath, String barcode){
         try {
             Stream<Path> stream = Files.find(filePath, 1000,

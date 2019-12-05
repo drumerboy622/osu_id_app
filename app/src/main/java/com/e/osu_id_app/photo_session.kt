@@ -14,8 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import java.io.File
 import kotlinx.android.synthetic.main.activity_photo_center_actvitiy.*
-import kotlinx.android.synthetic.main.activity_second.*
-
 
 val permissions = arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE)
 
